@@ -18,9 +18,11 @@ export default function Home() {
           <BudouX>フロントエンドエンジニア</BudouX>
         </p>
         <p className={styles.hobby}>
-          <BudouX>
-            触りたくなるデザインと、やさしいインターネットと、口中の水分が全部持っていかれる食べ物がすき
-          </BudouX>
+          <BudouX>触りたくなるデザインと、</BudouX>
+          <br />
+          <BudouX>やさしいインターネットと、</BudouX>
+          <br />
+          <BudouX>口中の水分が全部持っていかれる食べ物がすき</BudouX>
         </p>
       </div>
     </main>
