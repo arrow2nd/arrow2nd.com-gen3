@@ -1,0 +1,21 @@
+:root {
+  --color-text: #673838;
+  --color-bg: #fffefe;
+  --color-border: #cebfbf;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  max-width: 100vw;
+  overflow-x: hidden;
+  color: var(--color-text);
+  background: var(--color-bg);
+  font-family: "IBM Plex Sans JP", sans-serif;
+}
+
+@layer utilities {
+  .inline-block {
+    display: inline-block;
+  }
+}
