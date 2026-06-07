@@ -28,7 +28,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" className={`${ibmPlexSansJP.className} ${poppins.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <footer>(c) arrow2nd</footer>
+      </body>
     </html>
   );
 }

@@ -1,0 +1,27 @@
+.root {
+  padding: 0 1.5rem;
+}
+
+.heading {
+  font-family: var(--font-poppins);
+  font-size: 4rem;
+  font-weight: 500;
+  letter-spacing: 0.025rem;
+  margin-bottom: 2.5rem;
+}
+
+.section + .section {
+  margin-top: 2.5rem;
+}
+
+.text {
+  margin-top: 1rem;
+}
+
+.list {
+  margin-top: 1rem;
+
+  > li + li {
+    margin-top: 0.25rem;
+  }
+}

@@ -1,0 +1,22 @@
+.root {
+  padding: 0 1.5rem 8rem;
+}
+
+.heading {
+  font-family: var(--font-poppins);
+  font-size: 4rem;
+  font-weight: 500;
+  letter-spacing: 0.025rem;
+  margin-bottom: 2.5rem;
+}
+
+.section + .section {
+  margin-top: 2.5rem;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}

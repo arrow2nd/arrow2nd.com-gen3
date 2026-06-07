@@ -1,0 +1,26 @@
+.root {
+  margin-top: 1rem;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.item + .item {
+  margin-top: 0.75rem;
+}
+
+.period {
+  display: block;
+  font-size: 0.75rem;
+}
+
+.name {
+  font-size: 1rem;
+}
+
+.role {
+  font-size: 0.75rem;
+}

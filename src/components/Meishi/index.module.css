@@ -1,0 +1,49 @@
+.root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  height: 100svh;
+  overflow: hidden;
+  padding: 0 1.5rem;
+}
+
+.neko {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 50vw;
+  height: auto;
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.greeting {
+  font-size: 1rem;
+}
+
+.name {
+  font-family: var(--font-poppins);
+  font-size: 2.5rem;
+  font-weight: 500;
+  letter-spacing: 0.025rem;
+}
+
+.suffix {
+  margin-left: 0.5rem;
+  font-size: 1rem;
+}
+
+.description {
+  margin-top: 4rem;
+}
+
+.hobby {
+  margin-top: 1.5rem;
+}
