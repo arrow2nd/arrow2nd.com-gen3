@@ -17,31 +17,31 @@
   height: auto;
 }
 
-.name {
+.heading {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
+}
 
-  .a {
-    font-size: 1rem;
-  }
+.greeting {
+  font-size: 1rem;
+}
 
-  .b {
-    font-family: var(--font-poppins);
-    font-size: 2.5rem;
-  }
+.name {
+  font-family: var(--font-poppins);
+  font-size: 2.5rem;
+}
 
-  .c {
-    margin-left: 0.5rem;
-    font-size: 1rem;
-  }
+.suffix {
+  margin-left: 0.5rem;
+  font-size: 1rem;
 }
 
 .description {
   margin-top: 4rem;
+}
 
-  .hobby {
-    margin-top: 1.5rem;
-  }
+.hobby {
+  margin-top: 1.5rem;
 }

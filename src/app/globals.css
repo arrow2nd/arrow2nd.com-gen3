@@ -14,8 +14,6 @@ body {
   font-family: "IBM Plex Sans JP", sans-serif;
 }
 
-@layer utilities {
-  .inline-block {
-    display: inline-block;
-  }
+.inline-block {
+  display: inline-block;
 }

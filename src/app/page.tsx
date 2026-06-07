@@ -6,13 +6,13 @@ export default function Home() {
   return (
     <main className={styles.main}>
       <Neko className={styles.neko} aria-hidden="true" />
-      <div className={styles.name}>
-        <span className={styles.a}>はじめまして、</span>
-        <h1>
-          <span className={styles.b}>arrow2nd</span>
-          <span className={styles.c}>です。</span>
-        </h1>
-      </div>
+      <h1 className={styles.heading}>
+        <span className={styles.greeting}>はじめまして、</span>
+        <span>
+          <span className={styles.name}>arrow2nd</span>
+          <span className={styles.suffix}>です。</span>
+        </span>
+      </h1>
       <div className={styles.description}>
         <p>
           <BudouX>フロントエンドエンジニア</BudouX>
