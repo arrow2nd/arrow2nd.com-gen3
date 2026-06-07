@@ -23,13 +23,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  drawer,
 }: Readonly<{
   children: React.ReactNode;
+  drawer: React.ReactNode;
 }>) {
   return (
     <html lang="ja" className={`${ibmPlexSansJP.className} ${poppins.variable}`}>
       <body>
         {children}
+        {drawer}
         <footer>(c) arrow2nd</footer>
       </body>
     </html>

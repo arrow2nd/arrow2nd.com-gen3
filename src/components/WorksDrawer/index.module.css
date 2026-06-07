@@ -1,0 +1,17 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.content {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-bg);
+  border-radius: 16px 16px 0 0;
+  padding: 1.5rem;
+  max-height: 85vh;
+  overflow-y: auto;
+}

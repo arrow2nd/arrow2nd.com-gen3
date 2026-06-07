@@ -1,9 +1,16 @@
+import Link from "next/link";
 import styles from "./index.module.css";
 
-export default function Card() {
+type Props = {
+  slug: string;
+  title: string;
+  thumbnail: string;
+};
+
+export default function Card({ slug, title, thumbnail }: Props) {
   return (
-    <div className={styles.root}>
-      <img src="https://placehold.jp/ffffff/000000/1280x720.png?text=TEST" />
-    </div>
+    <Link href={`/works/${slug}`} className={styles.root}>
+      <img src={thumbnail} alt={title} />
+    </Link>
   );
 }

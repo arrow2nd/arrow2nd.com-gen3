@@ -3,6 +3,7 @@
 }
 
 .heading {
+  color: var(--color-text-head);
   font-family: var(--font-poppins);
   font-size: 4rem;
   font-weight: 500;
