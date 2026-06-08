@@ -1,7 +1,8 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px);
 }
 
 .content {
@@ -10,8 +11,28 @@
   left: 0;
   right: 0;
   background: var(--color-bg);
-  border-radius: 16px 16px 0 0;
-  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-bottom: none;
+  border-radius: 32px 16px 16px 16px;
+  margin: 0.5rem;
+  padding-bottom: 1.5rem;
+  height: fit-content;
   max-height: 85vh;
-  overflow-y: auto;
+  overflow: hidden;
+}
+
+.handle {
+  display: grid;
+  grid-template-columns: repeat(5, 4px);
+  justify-content: center;
+  gap: 3px;
+  padding: 1rem 0;
+}
+
+.handleDot {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-border);
 }

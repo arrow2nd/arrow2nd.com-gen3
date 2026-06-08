@@ -1,0 +1,17 @@
+.inner {
+  overflow-y: scroll;
+}
+
+.carousel {
+}
+
+.container {
+  margin-top: 1.5rem;
+  padding: 0 1rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
