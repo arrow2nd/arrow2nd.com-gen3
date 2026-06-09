@@ -9,7 +9,7 @@ type Props = {
 
 export default function Card({ slug, title, thumbnail }: Props) {
   return (
-    <Link href={`/works/${slug}`} className={styles.root}>
+    <Link id={slug} href={`/works/${slug}`} className={styles.root}>
       <img src={thumbnail} alt={title} />
     </Link>
   );

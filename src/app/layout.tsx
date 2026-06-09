@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans_JP, Poppins } from "next/font/google";
+import Footer from "@/components/Footer";
 import "./reset.css";
 import "./globals.css";
 
@@ -33,7 +34,7 @@ export default function RootLayout({
       <body>
         {children}
         {drawer}
-        <footer>(c) arrow2nd</footer>
+        <Footer />
       </body>
     </html>
   );

@@ -18,9 +18,7 @@ const nextConfig: NextConfig = {
     },
   },
   webpack(config) {
-    const fileLoaderRule = config.module.rules.find(
-      (rule: { test?: RegExp }) => rule.test?.test?.(".svg"),
-    );
+    const fileLoaderRule = config.module.rules.find((rule: { test?: RegExp }) => rule.test?.test?.(".svg"));
 
     config.module.rules.push(
       { ...fileLoaderRule, test: /\.svg$/i, resourceQuery: /url/ },
@@ -34,6 +32,9 @@ const nextConfig: NextConfig = {
     fileLoaderRule.exclude = /\.svg$/i;
 
     return config;
+  },
+  experimental: {
+    viewTransition: true,
   },
 };
 

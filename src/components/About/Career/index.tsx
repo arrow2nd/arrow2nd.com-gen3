@@ -44,7 +44,7 @@ function formatPeriod(yearMonth: string) {
 
 export default function Career() {
   return (
-    <div>
+    <>
       <DashedHeading as="h3">経歴</DashedHeading>
       <dl className={styles.root}>
         {entries.map((entry) => (
@@ -60,6 +60,6 @@ export default function Career() {
           </div>
         ))}
       </dl>
-    </div>
+    </>
   );
 }
