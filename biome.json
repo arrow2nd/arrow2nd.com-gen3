@@ -36,7 +36,8 @@
           "level": "error",
           "fix": "safe"
         },
-        "noUnknownMediaFeatureName": "off"
+        "noUnknownMediaFeatureName": "off",
+        "noUnknownProperty": "off"
       },
       "a11y": {
         "useButtonType": "off",

@@ -1,0 +1,61 @@
+.track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  touch-action: pan-x;
+  scrollbar-width: none;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.image {
+  flex: 0 0 100%;
+  width: 100%;
+  scroll-snap-align: start;
+  object-fit: cover;
+}
+
+.indicators {
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+  margin: 1rem 1rem 0;
+}
+
+.indicator {
+  flex: 1;
+  height: 4px;
+  padding: 0;
+  border: none;
+  background: var(--color-border);
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.indicatorBar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--color-text);
+}
+
+.indicatorFill {
+  composes: indicatorBar;
+  transform-origin: left;
+  animation: fillProgress 3s linear forwards;
+  animation-play-state: var(--play-state, running);
+}
+
+@keyframes fillProgress {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}

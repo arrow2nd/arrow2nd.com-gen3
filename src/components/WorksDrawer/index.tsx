@@ -27,7 +27,7 @@ export default function WorksDrawer({ children }: PropsWithChildren) {
               <span key={i.toString()} className={styles.handleDot} />
             ))}
           </div>
-          {children}
+          <div className={styles.inner}>{children}</div>
         </Drawer.Content>
       </Drawer.Portal>
     </Drawer.Root>

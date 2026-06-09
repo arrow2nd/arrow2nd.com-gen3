@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Carousel from "@/components/Carousel";
 import MarkdownContent from "@/components/MarkdownContent";
 import WorksDrawer from "@/components/WorksDrawer";
 import { getWorkBySlug } from "@/lib/works";
@@ -14,15 +15,11 @@ export default async function DrawerPage({ params }: { params: Promise<{ slug: s
 
   return (
     <WorksDrawer>
-      <div className={styles.inner}>
-        <div className={styles.carousel}>
-          <img src={work.images[0]} alt={work.title} />
-        </div>
-        <div className={styles.container}>
-          <h1 className={styles.title}>{work.title}</h1>
-          <p>#{work.category}</p>
-          <MarkdownContent content={work.content} />
-        </div>
+      <Carousel images={work.images} alt={work.title} />
+      <div className={styles.container}>
+        <h1 className={styles.title}>{work.title}</h1>
+        <p>#{work.category}</p>
+        <MarkdownContent content={work.content} />
       </div>
     </WorksDrawer>
   );

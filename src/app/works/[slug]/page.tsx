@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Carousel from "@/components/Carousel";
 import MarkdownContent from "@/components/MarkdownContent";
 import { getAllSlugs, getWorkBySlug } from "@/lib/works";
 
@@ -20,6 +21,7 @@ export default async function WorkPage({
 
   return (
     <div>
+      <Carousel images={work.images} alt={work.title} />
       <h1>{work.title}</h1>
       <MarkdownContent content={work.content} />
     </div>
