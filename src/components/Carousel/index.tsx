@@ -130,14 +130,7 @@ export default function Carousel({ images, alt }: Props) {
 
   return (
     // biome-ignore lint/a11y/noStaticElementInteractions: ドラッグでのスクロールを優先させたい
-    <div
-      style={{ "--play-state": paused ? "paused" : "running" } as React.CSSProperties}
-      onMouseEnter={pause}
-      onMouseLeave={resume}
-      onTouchStart={pause}
-      onTouchEnd={resume}
-      onTouchCancel={resume}
-    >
+    <div onMouseEnter={pause} onMouseLeave={resume} onTouchStart={pause} onTouchEnd={resume} onTouchCancel={resume}>
       <div ref={trackRef} className={styles.track} onScroll={handleScroll}>
         {slides.map((src, i) => {
           const logicalIndex = (i - 1 + images.length) % images.length;
@@ -158,13 +151,10 @@ export default function Carousel({ images, alt }: Props) {
           <button
             key={i.toString()}
             type="button"
-            className={styles.indicator}
+            className={i === activeIndex ? styles.indicatorActive : styles.indicator}
             aria-label={`${i + 1}枚目の画像`}
             onClick={() => scrollToLogical(i)}
-          >
-            {i < activeIndex && <span className={styles.indicatorBar} />}
-            {i === activeIndex && <span key={activeIndex} className={styles.indicatorFill} />}
-          </button>
+          />
         ))}
       </div>
     </div>

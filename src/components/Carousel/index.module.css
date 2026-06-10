@@ -20,42 +20,22 @@
 .indicators {
   display: flex;
   justify-content: center;
-  gap: 0.25rem;
+  gap: 0.5rem;
   margin: 1rem 1rem 0;
 }
 
 .indicator {
-  flex: 1;
-  height: 4px;
+  width: 8px;
+  height: 8px;
   padding: 0;
   border: none;
   background: var(--color-border);
-  border-radius: 2px;
-  position: relative;
-  overflow: hidden;
+  border-radius: 50%;
   cursor: pointer;
+  transition: background 0.2s;
 }
 
-.indicatorBar {
-  display: block;
-  width: 100%;
-  height: 100%;
+.indicatorActive {
+  composes: indicator;
   background: var(--color-text);
-}
-
-.indicatorFill {
-  composes: indicatorBar;
-  transform-origin: left;
-  animation: fillProgress 3s linear forwards;
-  animation-play-state: var(--play-state, running);
-}
-
-@keyframes fillProgress {
-  from {
-    transform: scaleX(0);
-  }
-
-  to {
-    transform: scaleX(1);
-  }
 }

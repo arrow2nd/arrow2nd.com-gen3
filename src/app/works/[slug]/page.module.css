@@ -23,8 +23,17 @@
 }
 
 .title {
-  font-size: 1.5rem;
-  font-weight: 500;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.category {
+  font-family: var(--font-poppins);
+  width: fit-content;
+  color: var(--color-bg);
+  background-color: var(--color-text);
+  padding: 0 12px;
+  border-radius: 8px 6px 4px 4px;
 }
 
 .backButton:active {

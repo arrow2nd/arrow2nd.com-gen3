@@ -27,7 +27,7 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
       <Carousel images={work.images} alt={work.title} />
       <div className={styles.container}>
         <h1 className={styles.title}>{work.title}</h1>
-        <p>#{work.category}</p>
+        <p className={styles.category}>#{work.category}</p>
         <MarkdownContent content={work.content} />
       </div>
     </div>
