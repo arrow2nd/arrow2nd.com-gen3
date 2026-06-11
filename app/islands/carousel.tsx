@@ -65,6 +65,22 @@ export default function Carousel({ images, alt }: Props) {
     clearInterval(autoScrollRef.current ?? undefined);
   };
 
+  // 自動スクロールと同じく現在のDOMインデックス±1へ送る。端のwrapは handleScroll が処理する
+  const scrollByStep = (delta: 1 | -1) => {
+    const el = trackRef.current;
+    if (!el) {
+      return;
+    }
+
+    const slideWidth = getSlideWidth();
+    if (slideWidth === 0) {
+      return;
+    }
+
+    const domIndex = Math.round(el.scrollLeft / slideWidth);
+    scrollToDom(domIndex + delta, "smooth");
+  };
+
   // 初回マウント時の初期化 + クリーンアップ
   useEffect(() => {
     if (images.length <= 1) {
@@ -130,20 +146,24 @@ export default function Carousel({ images, alt }: Props) {
   return (
     // biome-ignore lint/a11y/noStaticElementInteractions: ドラッグでのスクロールを優先させたい
     <div onMouseEnter={pause} onMouseLeave={resume} onTouchStart={pause} onTouchEnd={resume} onTouchCancel={resume}>
-      <div ref={trackRef} class={styles.track} onScroll={handleScroll}>
-        {slides.map((src, i) => {
-          const logicalIndex = (i - 1 + images.length) % images.length;
+      <div class={styles.viewport}>
+        <div ref={trackRef} class={styles.track} onScroll={handleScroll}>
+          {slides.map((src, i) => {
+            const logicalIndex = (i - 1 + images.length) % images.length;
 
-          return (
-            <img
-              key={`${src}-${i.toString()}`}
-              src={src}
-              alt={`${alt} (${logicalIndex + 1}/${images.length})`}
-              class={styles.image}
-              aria-hidden={i === 0 || i === slides.length - 1}
-            />
-          );
-        })}
+            return (
+              <img
+                key={`${src}-${i.toString()}`}
+                src={src}
+                alt={`${alt} (${logicalIndex + 1}/${images.length})`}
+                class={styles.image}
+                aria-hidden={i === 0 || i === slides.length - 1}
+              />
+            );
+          })}
+        </div>
+        <button type="button" class={styles.tapPrev} aria-label="前の画像" onClick={() => scrollByStep(-1)} />
+        <button type="button" class={styles.tapNext} aria-label="次の画像" onClick={() => scrollByStep(1)} />
       </div>
       <div class={styles.indicators}>
         {images.map((_, i) => (

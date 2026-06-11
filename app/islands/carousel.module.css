@@ -1,3 +1,7 @@
+.viewport {
+  position: relative;
+}
+
 .track {
   display: flex;
   overflow-x: auto;
@@ -15,6 +19,29 @@
   width: 100%;
   scroll-snap-align: start;
   object-fit: cover;
+}
+
+.tapArea {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 25%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  /* タッチ時はネイティブの横スワイプを阻害せず、タップのディレイだけ抑制する */
+  touch-action: pan-x;
+}
+
+.tapPrev {
+  composes: tapArea;
+  left: 0;
+}
+
+.tapNext {
+  composes: tapArea;
+  right: 0;
 }
 
 .indicators {
