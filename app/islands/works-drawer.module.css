@@ -13,6 +13,9 @@
   border-bottom: none;
   border-radius: 32px 16px 16px 16px;
   overflow: hidden;
+  /* resting 状態を画面外にしておく。表示位置への移動は island が
+     インラインstyleで明示的に行うため、JS適用前に描画されても最終位置が見えない */
+  transform: translateY(110%);
   /* vaul 相当のイージング */
   transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
 }

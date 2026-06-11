@@ -76,6 +76,16 @@ export default function WorksDrawer() {
         return;
       }
 
+      const firstOpen = !isOpen;
+
+      if (firstOpen) {
+        // 必ず showModal より前に画面外へ置く。後続の await が描画機会を生むため、
+        // 表示後に動かすと最終位置のドロワーが数フレーム見えてチラつく
+        dialog.style.transition = "none";
+        dialog.style.transform = "translateY(110%)";
+        setDragProgress(1);
+      }
+
       if (!dialog.open) {
         dialog.showModal();
       }
@@ -86,20 +96,17 @@ export default function WorksDrawer() {
 
       // fragment 内の island(カルーセル等)を手動ハイドレーション
       // showModal 後でないと display:none 中の採寸が 0 になる
+      // (translateY で画面外でもレイアウトは生きているので採寸できる)
       const hydrate = (globalThis as Record<string, unknown>).__hydrateIslands as HydrateFn | undefined;
       await hydrate?.(inner);
 
-      if (isOpen) {
+      if (!firstOpen) {
         return;
       }
 
       isOpen = true;
 
       // 画面外 → 0 へスライドイン
-      dialog.style.transition = "none";
-      dialog.style.transform = "translateY(110%)";
-      setDragProgress(1);
-
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           dialog.style.transition = "";

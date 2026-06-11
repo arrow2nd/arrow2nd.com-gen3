@@ -1,5 +1,4 @@
 import Carousel from "../../islands/carousel";
-import ShareButton from "../../islands/share-button";
 import type { Work } from "../../lib/works";
 import MarkdownContent from "../MarkdownContent";
 import styles from "./index.module.css";
@@ -17,7 +16,6 @@ export default function WorkDetail({ work }: Props) {
         <h1 class={styles.title}>{work.title}</h1>
         <p class={styles.category}>#{work.category}</p>
         <MarkdownContent Content={work.Content} />
-        <ShareButton title={work.title} path={`/works/${work.slug}`} />
       </div>
     </>
   );
