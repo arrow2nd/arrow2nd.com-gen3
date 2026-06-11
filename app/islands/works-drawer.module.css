@@ -13,15 +13,27 @@
   border-bottom: none;
   border-radius: 32px 16px 16px 16px;
   overflow: hidden;
-  /* resting 状態を画面外にしておく。表示位置への移動は island が
-     インラインstyleで明示的に行うため、JS適用前に描画されても最終位置が見えない */
+  /* ここが「閉じ」状態。island は data-state 属性をトグルするだけなので、
+     開閉アニメーションの始点・終点は CSS だけで調整できる。
+     resting を画面外にしておくことで、JS適用前に描画されても最終位置が見えない */
   transform: translateY(110%);
+  scale: 0.98;
+  filter: blur(8px);
   /* vaul 相当のイージング */
-  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  transition:
+    transform 0.4s cubic-bezier(0.32, 0.72, 0, 1),
+    scale 0.4s cubic-bezier(0.32, 0.72, 0, 1),
+    filter 0.4s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .content[open] {
   display: flex;
+}
+
+.content[data-state="open"] {
+  transform: translateY(0);
+  scale: 1;
+  filter: blur(0);
 }
 
 .content::backdrop {

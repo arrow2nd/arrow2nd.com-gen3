@@ -79,10 +79,10 @@ export default function WorksDrawer() {
       const firstOpen = !isOpen;
 
       if (firstOpen) {
-        // 必ず showModal より前に画面外へ置く。後続の await が描画機会を生むため、
-        // 表示後に動かすと最終位置のドロワーが数フレーム見えてチラつく
+        // data-state 未設定 = CSSの「閉じ」状態(画面外)のまま表示する。
+        // 後続の await が描画機会を生むため、ここで開き状態にすると
+        // 最終位置のドロワーが数フレーム見えてチラつく
         dialog.style.transition = "none";
-        dialog.style.transform = "translateY(110%)";
         setDragProgress(1);
       }
 
@@ -106,11 +106,12 @@ export default function WorksDrawer() {
 
       isOpen = true;
 
-      // 画面外 → 0 へスライドイン
+      // CSSの「閉じ」状態 → 「開き」状態へ遷移(スライドイン + scale/blur 解除)
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           dialog.style.transition = "";
-          dialog.style.transform = "translateY(0)";
+          dialog.style.transform = "";
+          dialog.dataset.state = "open";
           setDragProgress(0);
         });
       });
@@ -132,11 +133,8 @@ export default function WorksDrawer() {
 
         finished = true;
         dialog.removeEventListener("transitionend", onTransitionEnd);
+        // 後始末は close イベントハンドラ(onDialogClose)に集約されている
         dialog.close();
-        document.body.style.overflow = "";
-        dialog.style.transform = "";
-        setDragProgress(0);
-        inner.innerHTML = "";
       };
 
       const onTransitionEnd = (e: TransitionEvent) => {
@@ -148,11 +146,32 @@ export default function WorksDrawer() {
       dialog.addEventListener("transitionend", onTransitionEnd);
       setTimeout(finish, CLOSE_FALLBACK_MS);
 
+      // CSSの「閉じ」状態へ遷移。ドラッグ中ならインラインのtransformを外し、
+      // 現在位置からアニメーションさせる
       dialog.style.transition = "";
-      dialog.style.transform = "translateY(110%)";
+      dialog.style.transform = "";
+      delete dialog.dataset.state;
       setDragProgress(1);
 
       if (viaUI) {
+        closingViaUI = true;
+        history.back();
+      }
+    };
+
+    // dialog が「どう閉じられても」状態が壊れないように、後始末は close イベントに集約する。
+    // cancel の preventDefault は CloseWatcher 仕様により無視されることがあり
+    // (user activation の無い Esc、連続 Esc 等)、ネイティブの即時 close を完全には防げない
+    const onDialogClose = () => {
+      document.body.style.overflow = "";
+      dialog.style.transform = "";
+      delete dialog.dataset.state;
+      setDragProgress(0);
+      inner.innerHTML = "";
+
+      if (isOpen) {
+        // closeWithAnimation を経ずにネイティブで閉じられた場合の履歴同期
+        isOpen = false;
         closingViaUI = true;
         history.back();
       }
@@ -314,8 +333,8 @@ export default function WorksDrawer() {
       if (velocity > CLOSE_VELOCITY || dy > dialog.offsetHeight * CLOSE_DISTANCE_RATIO) {
         closeWithAnimation(true);
       } else {
-        // スナップバック
-        dialog.style.transform = "translateY(0)";
+        // スナップバック(インラインを外して data-state="open" の位置へ戻す)
+        dialog.style.transform = "";
         setDragProgress(0);
       }
     };
@@ -327,13 +346,14 @@ export default function WorksDrawer() {
 
       stopTracking();
       dialog.style.transition = "";
-      dialog.style.transform = "translateY(0)";
+      dialog.style.transform = "";
       setDragProgress(0);
     };
 
     document.addEventListener("click", onDocumentClick);
     window.addEventListener("popstate", onPopState);
     dialog.addEventListener("cancel", onCancel);
+    dialog.addEventListener("close", onDialogClose);
     dialog.addEventListener("click", onDialogClick);
     dialog.addEventListener("pointerdown", onPointerDown);
     dialog.addEventListener("pointermove", onPointerMove);
@@ -344,6 +364,7 @@ export default function WorksDrawer() {
       document.removeEventListener("click", onDocumentClick);
       window.removeEventListener("popstate", onPopState);
       dialog.removeEventListener("cancel", onCancel);
+      dialog.removeEventListener("close", onDialogClose);
       dialog.removeEventListener("click", onDialogClick);
       dialog.removeEventListener("pointerdown", onPointerDown);
       dialog.removeEventListener("pointermove", onPointerMove);
