@@ -19,11 +19,10 @@
   transform: translateY(110%);
   scale: 0.98;
   filter: blur(8px);
-  /* vaul 相当のイージング */
   transition:
-    transform 0.4s cubic-bezier(0.32, 0.72, 0, 1),
-    scale 0.4s cubic-bezier(0.32, 0.72, 0, 1),
-    filter 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+    transform 0.5s cubic-bezier(0.32, 0.72, 0, 1),
+    scale 0.8s cubic-bezier(0.32, 0.72, 0, 1),
+    filter 0.8s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .content[open] {
