@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "hono/jsx";
-import styles from "./carousel.module.css";
+import styles from "./index.module.css";
 
 type Props = {
   images: string[];

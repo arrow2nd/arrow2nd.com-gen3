@@ -1,4 +1,4 @@
-import Carousel from "../../islands/carousel";
+import Carousel from "../../islands/Carousel";
 import type { Work } from "../../lib/works";
 import MarkdownContent from "../MarkdownContent";
 import styles from "./index.module.css";
