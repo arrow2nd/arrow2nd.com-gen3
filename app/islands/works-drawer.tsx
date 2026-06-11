@@ -100,6 +100,13 @@ export default function WorksDrawer() {
       const hydrate = (globalThis as Record<string, unknown>).__hydrateIslands as HydrateFn | undefined;
       await hydrate?.(inner);
 
+      // await中に閉じられた場合はここで中断する。
+      // 続行して isOpen を立てると、次回 open() が firstOpen=false 判定になり
+      // 開き状態への遷移がスキップされて画面外でスタックする
+      if (!dialog.open) {
+        return;
+      }
+
       if (!firstOpen) {
         return;
       }
@@ -109,6 +116,12 @@ export default function WorksDrawer() {
       // CSSの「閉じ」状態 → 「開き」状態へ遷移(スライドイン + scale/blur 解除)
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
+          // rAF発火前にEscのネイティブclose等で閉じられた場合、閉じたdialogに
+          // data-state="open"を付けると次回open時に最終位置で表示されチラつくため中断する
+          if (!isOpen || !dialog.open) {
+            return;
+          }
+
           dialog.style.transition = "";
           dialog.style.transform = "";
           dialog.dataset.state = "open";
@@ -168,10 +181,14 @@ export default function WorksDrawer() {
       delete dialog.dataset.state;
       setDragProgress(0);
       inner.innerHTML = "";
+      isOpen = false;
 
-      if (isOpen) {
-        // closeWithAnimation を経ずにネイティブで閉じられた場合の履歴同期
-        isOpen = false;
+      // closingViaUI が立っている = closeWithAnimation が back() 発行済み(popstate 未処理)。
+      // Esc のネイティブ close では cancel → closeWithAnimation(back 1回目) → 即 close がほぼ同時に来るため、
+      // この時点では location.pathname が /works/:slug のまま(back() は非同期)。
+      // フラグを見ずに pathname だけで判定すると古い URL を見て二重に back() し2段戻ってしまう
+      if (!closingViaUI && WORK_PATH_RE.test(location.pathname)) {
+        // closeWithAnimation を経ずに閉じられた場合(開ききる前の close 含む)の履歴同期
         closingViaUI = true;
         history.back();
       }
