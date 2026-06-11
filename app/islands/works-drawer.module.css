@@ -1,0 +1,70 @@
+.content {
+  position: fixed;
+  inset: auto 0 0 0;
+  margin: 0.5rem;
+  width: auto;
+  max-width: none;
+  max-height: 85vh;
+  padding: 0;
+  flex-direction: column;
+  background: var(--color-bg);
+  color: inherit;
+  border: 1px solid var(--color-border);
+  border-bottom: none;
+  border-radius: 32px 16px 16px 16px;
+  overflow: hidden;
+  /* ここが「閉じ」状態。island は data-state 属性をトグルするだけなので、
+     開閉アニメーションの始点・終点は CSS だけで調整できる。
+     resting を画面外にしておくことで、JS適用前に描画されても最終位置が見えない */
+  transform: translateY(110%);
+  scale: 0.98;
+  filter: blur(8px);
+  transition:
+    transform 0.5s cubic-bezier(0.32, 0.72, 0, 1),
+    scale 0.8s cubic-bezier(0.32, 0.72, 0, 1),
+    filter 0.8s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.content[open] {
+  display: flex;
+}
+
+.content[data-state="open"] {
+  transform: translateY(0);
+  scale: 1;
+  filter: blur(0);
+}
+
+.content::backdrop {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px);
+  /* ドラッグ量(--drag-progress: 0〜1)に応じてフェード。dialog から継承される */
+  opacity: calc(1 - var(--drag-progress, 0));
+  transition: opacity 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.handle {
+  display: grid;
+  grid-template-columns: repeat(5, 4px);
+  justify-content: center;
+  gap: 3px;
+  padding: 1rem 0;
+  /* ハンドルからは常にドラッグできるようネイティブジェスチャを無効化 */
+  touch-action: none;
+  cursor: grab;
+}
+
+.handleDot {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-border);
+}
+
+.inner {
+  overflow-y: auto;
+  min-height: 0;
+  /* ドロワー内スクロールが端に達しても背面へ伝播させない */
+  overscroll-behavior: contain;
+}

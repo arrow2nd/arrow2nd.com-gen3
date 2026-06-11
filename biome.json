@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!**/node_modules", "!.next", "!dist", "!build"]
+    "includes": ["**", "!**/node_modules", "!dist", "!build", "!.claude", "!.wrangler"]
   },
   "assist": {
     "actions": {
@@ -55,10 +55,6 @@
         "noInferrableTypes": "error",
         "noUselessElse": "error"
       }
-    },
-    "domains": {
-      "next": "recommended",
-      "react": "recommended"
     }
   },
   "javascript": {
@@ -67,6 +63,9 @@
     }
   },
   "css": {
+    "parser": {
+      "cssModules": true
+    },
     "formatter": {
       "enabled": true,
       "indentStyle": "space",
