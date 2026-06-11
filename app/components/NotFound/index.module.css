@@ -1,0 +1,28 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 6rem 1rem;
+}
+
+.heading {
+  font-family: var(--font-poppins);
+  font-size: 3rem;
+  color: var(--color-text-head);
+}
+
+.backLink {
+  display: block;
+  padding: 0.5rem 2rem;
+  width: fit-content;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border-emphasis);
+  border-radius: 16px 8px 8px 8px;
+  transition: transform 0.15s ease-out;
+}
+
+.backLink:active {
+  transform: scale(0.9);
+}
