@@ -34,6 +34,13 @@
   touch-action: pan-x;
 }
 
+@media (pointer: coarse) {
+  .tapArea {
+    /* タッチではスワイプを優先するためポインタを素通しさせる(タップ判定はtrack側の座標で行う) */
+    pointer-events: none;
+  }
+}
+
 .tapPrev {
   composes: tapArea;
   left: 0;

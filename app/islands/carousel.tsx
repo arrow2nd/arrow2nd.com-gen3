@@ -16,6 +16,7 @@ export default function Carousel({ images, alt }: Props) {
   // hono/jsx の useRef は current が T | null になるため null 初期化
   const scrollTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
   const autoScrollRef = useRef<ReturnType<typeof setInterval>>(null);
+  const initializedRef = useRef(false);
 
   // クローン込みのスライド: [last, ...images, first]
   const totalSlides = images.length + 2;
@@ -81,13 +82,28 @@ export default function Carousel({ images, alt }: Props) {
     scrollToDom(domIndex + delta, "smooth");
   };
 
+  // スクロール可能になった時点で一度だけ初期位置(クローンを除いた1枚目)を適用する
+  const initPosition = () => {
+    const el = trackRef.current;
+    if (!el || initializedRef.current) {
+      return;
+    }
+    // 画像ロード前は scrollWidth が clientWidth 以下で scrollTo が 0 に clamp されるため、
+    // スクロール可能になってから初期位置(クローンを除いた1枚目)を適用する
+    if (el.scrollWidth <= el.clientWidth) {
+      return;
+    }
+    initializedRef.current = true;
+    scrollToDom(1, "instant");
+  };
+
   // 初回マウント時の初期化 + クリーンアップ
   useEffect(() => {
     if (images.length <= 1) {
       return;
     }
 
-    scrollToDom(1, "instant");
+    initPosition();
     startAutoScroll();
 
     return () => stopAutoScroll();
@@ -126,6 +142,26 @@ export default function Carousel({ images, alt }: Props) {
     }, 80);
   };
 
+  // クリック座標が左右25%の帯なら前後送りする。
+  // fine pointer 環境ではボタン(track の兄弟)がクリックを受けるため、クリックは track まで届かず二重発火しない。
+  // coarse 環境ではボタンが pointer-events: none で素通しになり img がターゲットになるため、クリックが track まで bubble してここで処理される。
+  // タッチでスワイプ(スクロール)が発生した場合はブラウザが click を発火しないため、誤発火もしない。
+  const handleTrackClick = (e: MouseEvent) => {
+    const el = trackRef.current;
+    if (!el) {
+      return;
+    }
+
+    const rect = el.getBoundingClientRect();
+    const ratio = (e.clientX - rect.left) / rect.width;
+
+    if (ratio < 0.25) {
+      scrollByStep(-1);
+    } else if (ratio > 0.75) {
+      scrollByStep(1);
+    }
+  };
+
   const pause = () => {
     setPaused(true);
     stopAutoScroll();
@@ -147,7 +183,9 @@ export default function Carousel({ images, alt }: Props) {
     // biome-ignore lint/a11y/noStaticElementInteractions: ドラッグでのスクロールを優先させたい
     <div onMouseEnter={pause} onMouseLeave={resume} onTouchStart={pause} onTouchEnd={resume} onTouchCancel={resume}>
       <div class={styles.viewport}>
-        <div ref={trackRef} class={styles.track} onScroll={handleScroll}>
+        {/* biome-ignore lint/a11y/noStaticElementInteractions: タッチ時のクリック座標で前後送りを判定する。スワイプ(スクロール)を妨げないよう div のままにする。キーボード操作は下部のインジケーターと、coarse 環境でも activation を受けられる前後ボタンで担保されている */}
+        {/* biome-ignore lint/a11y/useKeyWithClickEvents: クリック座標による帯判定はポインタ専用の補助操作。キーボード操作は前後ボタンとインジケーターで担保されている */}
+        <div ref={trackRef} class={styles.track} onScroll={handleScroll} onClick={handleTrackClick}>
           {slides.map((src, i) => {
             const logicalIndex = (i - 1 + images.length) % images.length;
 
@@ -158,6 +196,7 @@ export default function Carousel({ images, alt }: Props) {
                 alt={`${alt} (${logicalIndex + 1}/${images.length})`}
                 class={styles.image}
                 aria-hidden={i === 0 || i === slides.length - 1}
+                onLoad={initPosition}
               />
             );
           })}
