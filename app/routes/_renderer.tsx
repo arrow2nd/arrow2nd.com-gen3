@@ -2,6 +2,7 @@ import { jsxRenderer } from "hono/jsx-renderer";
 import { Script } from "honox/server";
 import AppCss from "../components/AppCss";
 import Footer from "../components/Footer";
+import BottomMenu from "../islands/BottomMenu";
 
 export default jsxRenderer(({ children }) => {
   return (
@@ -17,6 +18,7 @@ export default jsxRenderer(({ children }) => {
       </head>
       <body>
         {children}
+        <BottomMenu />
         <Footer />
       </body>
     </html>

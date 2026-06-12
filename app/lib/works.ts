@@ -1,8 +1,5 @@
 import type { FC } from "hono/jsx";
-
-const CATEGORY_ORDER = ["web", "tool", "game", "sticker"] as const;
-
-type WorkCategory = (typeof CATEGORY_ORDER)[number];
+import { CATEGORY_ORDER, type WorkCategory } from "./categories";
 
 type Frontmatter = {
   title: string;

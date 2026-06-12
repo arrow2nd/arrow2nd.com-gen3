@@ -7,6 +7,8 @@
   height: 100svh;
   overflow: hidden;
   padding: 0 1.5rem;
+  /* ボトムメニューからのスクロール時に上端へ余白を確保する */
+  scroll-margin-top: 1.5rem;
 }
 
 .neko {

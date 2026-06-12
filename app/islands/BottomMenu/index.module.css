@@ -1,0 +1,244 @@
+/* ポヨン系の back-out easing。扇展開・popup・インジケータで共有する */
+.root {
+  --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  /* ボタン自体は pointer-events を持つが、コンテナの空き領域はクリックを素通しさせる */
+  pointer-events: none;
+  padding-bottom: 1.5rem;
+}
+
+.root > * {
+  pointer-events: auto;
+}
+
+/* --- menu ピルボタン --- */
+
+.menuButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.4rem;
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  background: var(--color-bg);
+  color: var(--color-text-head);
+  font-family: var(--font-poppins);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(103, 56, 56, 0.12);
+  /* エントランスの transform を扇の原点コンテナと分離するため menuButton 自身に当てる */
+  animation: entrance 0.6s var(--ease-back) 0.4s both;
+}
+
+.dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--color-button-bg);
+}
+
+.menuLabel {
+  line-height: 1;
+}
+
+@keyframes entrance {
+  from {
+    transform: translateY(150%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* --- 扇ボタン --- */
+
+.fanItem {
+  position: absolute;
+  /* ピル中央(コンテナ下端の中央付近)を原点にする。原点はピルの高さぶん上にずらす */
+  bottom: 1.5rem;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  margin-left: -22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-bg);
+  color: var(--color-text-head);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(103, 56, 56, 0.1);
+  /* 閉状態: 原点に畳んで非表示。visibility でタブ順からも除外する */
+  transform: translate(0, 0) scale(0.3);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    transform 0.35s var(--ease-back),
+    opacity 0.25s ease,
+    visibility 0s linear 0.35s,
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.fanIcon {
+  width: 22px;
+  height: 22px;
+}
+
+.root[data-open] .fanItem {
+  transform: translate(var(--tx), var(--ty)) scale(1);
+  opacity: 1;
+  visibility: visible;
+  /* 開く際は左から順に遅延させてポヨンと展開する */
+  transition-delay: calc(var(--i) * 40ms), calc(var(--i) * 40ms), 0s, 0s, 0s;
+}
+
+/* active な扇ボタンは色反転 */
+.fanItem[data-active] {
+  background: var(--color-button-bg);
+  border-color: var(--color-button-bg);
+  color: var(--color-bg);
+}
+
+/* --- 現在地インジケータ(リング) --- */
+
+.indicator {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  width: 52px;
+  height: 52px;
+  margin-left: -26px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border-emphasis);
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(0, 0);
+  transition:
+    transform 0.4s var(--ease-back),
+    opacity 0.25s ease;
+}
+
+.root[data-open] .indicator {
+  opacity: 1;
+  transform: translate(var(--tx), var(--ty));
+}
+
+/* --- ふきだし popup --- */
+
+.popup {
+  position: absolute;
+  /* アーチ頂点(RADIUS=88px)+余白ぶん上、コンテナ中央に固定 */
+  bottom: calc(1.5rem + 88px + 56px);
+  left: 50%;
+  width: max-content;
+  min-width: 9rem;
+  transform: translateX(-50%) scale(0.6) translateY(8px);
+  transform-origin: 50% 100%;
+  opacity: 0;
+  visibility: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-bg);
+  box-shadow: 0 8px 24px rgba(103, 56, 56, 0.14);
+  padding: 0.5rem;
+  transition:
+    transform 0.3s var(--ease-back),
+    opacity 0.2s ease,
+    visibility 0s linear 0.3s;
+}
+
+.popup[data-open] {
+  transform: translateX(-50%) scale(1) translateY(0);
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s, 0s, 0s;
+}
+
+/* しっぽ(回転正方形)。Works は左寄り / Contact は右寄りのボタンへ向ける */
+.popup::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  width: 12px;
+  height: 12px;
+  background: var(--color-bg);
+  border-right: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  transform: rotate(45deg);
+}
+
+.popupWorks::after {
+  left: 35%;
+}
+
+.popupContact::after {
+  left: 65%;
+}
+
+.popupList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.popupItem {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--color-text-head);
+  font-size: 0.95rem;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.popupItem:hover {
+  background: rgba(103, 56, 56, 0.06);
+}
+
+.popupIcon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.popupLabel {
+  font-family: var(--font-poppins);
+  line-height: 1;
+}
+
+/* --- モーション抑制 --- */
+
+@media (prefers-reduced-motion: reduce) {
+  .menuButton {
+    animation: none;
+  }
+
+  /* 開状態側で transition-delay を再宣言しているため、同等の specificity で無効化する */
+  .root .fanItem,
+  .root[data-open] .fanItem,
+  .root .indicator,
+  .root[data-open] .indicator,
+  .root .popup,
+  .root .popup[data-open] {
+    transition-duration: 0s;
+    transition-delay: 0s;
+  }
+}

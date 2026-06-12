@@ -1,5 +1,7 @@
 .root {
   padding: 0 1.5rem 3rem;
+  /* ボトムメニューからのスクロール時に上端へ余白を確保する */
+  scroll-margin-top: 1.5rem;
 }
 
 .heading {
@@ -9,6 +11,11 @@
   font-weight: 500;
   letter-spacing: 0.025rem;
   margin-bottom: 2.5rem;
+}
+
+.section {
+  /* ボトムメニューの Works popup からカテゴリへスクロールする際の上端余白 */
+  scroll-margin-top: 1.5rem;
 }
 
 .section + .section {

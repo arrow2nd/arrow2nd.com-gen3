@@ -5,7 +5,7 @@ import styles from "./index.module.css";
 
 export default function About() {
   return (
-    <section class={styles.root}>
+    <section id="about" class={styles.root}>
       <h2 class={styles.heading}>about</h2>
 
       <div class={styles.section}>

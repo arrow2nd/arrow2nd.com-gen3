@@ -7,11 +7,12 @@ export default function Works() {
   const worksByCategory = getAllWorksByCategory();
 
   return (
-    <section class={styles.root}>
+    <section id="works" class={styles.root}>
       <h2 class={styles.heading}>works</h2>
 
+      {/* Card の id={slug} と衝突しないよう works- プレフィックスを付与 */}
       {Array.from(worksByCategory.entries()).map(([category, works]) => (
-        <div key={category} class={styles.section}>
+        <div key={category} id={`works-${category}`} class={styles.section}>
           <DashedHeading as="h3" lang="en">
             {category}
           </DashedHeading>

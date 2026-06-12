@@ -4,7 +4,7 @@ import Neko from "./Neko";
 
 export default function Meishi() {
   return (
-    <section class={styles.root}>
+    <section id="home" class={styles.root}>
       <Neko class={styles.neko} />
       <h1 class={styles.heading}>
         <span class={styles.greeting}>はじめまして、</span>
