@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build --mode client && vite build && node ./scripts/build-ssg.mjs",
+    "dev": "node scripts/build-images.mjs && vite",
+    "build": "node scripts/build-images.mjs && vite build --mode client && vite build && node ./scripts/build-ssg.mjs",
     "preview": "wrangler dev",
     "deploy": "wrangler deploy",
     "lint": "biome check",
@@ -25,6 +25,8 @@
     "@types/node": "^20",
     "remark-frontmatter": "^5.0.0",
     "remark-mdx-frontmatter": "^5.2.0",
+    "sharp": "^0.35.1",
+    "smol-toml": "^1.6.1",
     "typescript": "^5",
     "vite": "^6",
     "wrangler": "^4"

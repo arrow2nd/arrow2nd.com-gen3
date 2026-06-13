@@ -2,6 +2,10 @@
   padding: 0 1.5rem;
   /* ボトムメニューからのスクロール時に上端へ余白を確保する */
   scroll-margin-top: 1.5rem;
+
+  @media (width >= 768px) {
+    padding: 0 4rem;
+  }
 }
 
 .heading {
@@ -11,10 +15,26 @@
   font-weight: 500;
   letter-spacing: 0.025rem;
   margin-bottom: 2.5rem;
+
+  @media (width >= 768px) {
+    font-size: 5rem;
+  }
 }
 
-.section + .section {
-  margin-top: 2.5rem;
+.sections {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+
+  @media (width >= 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 4rem;
+  }
+}
+
+.section {
+  /* grid アイテムは min-width:auto で長い文字列が横にはみ出すため抑止する */
+  min-width: 0;
 }
 
 .text {

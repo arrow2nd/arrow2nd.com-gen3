@@ -19,8 +19,9 @@ import { setupSectionObserver } from "./observer";
 type SectionId = "home" | "about" | "works" | "contact";
 type PopupId = "works" | "contact";
 
-// 扇の半径(px)。ピル中央を原点に各ボタンを配置する
-const RADIUS = 88;
+// 扇の半径(px)。ピル中央を原点に各ボタンを配置する。
+// 72px ボタンが隣と重ならないよう、中心間距離 2*R*sin(20°) ≧ ボタン径+隙間 を満たす値にしている
+const RADIUS = 117;
 
 // 4ボタンの配置角度(度, 0=右 / 90=上)。左→右に Home/About/Works/Contact を並べる。
 // 座標はモジュールスコープで事前計算し、CSS 変数で各ボタンへ渡す。
@@ -36,9 +37,6 @@ const ITEMS = [
   tx: Math.cos((item.angle * Math.PI) / 180) * RADIUS,
   ty: -Math.sin((item.angle * Math.PI) / 180) * RADIUS,
 }));
-
-// active なセクションの扇ボタン座標(インジケータの吸着先)を引くためのマップ
-const COORD_BY_ID = new Map(ITEMS.map((item) => [item.id, { tx: item.tx, ty: item.ty }]));
 
 const CONTACT_LINKS = [
   { label: "X", href: "https://x.com/_arrow2nd", external: true, Icon: XIcon },
@@ -62,9 +60,9 @@ const NAV_ICONS = {
 
 export default function BottomMenu() {
   const [open, setOpen] = useState(false);
-  // popup は単一 state で表現することで Works / Contact の排他が自動的に成り立つ
   const [popup, setPopup] = useState<PopupId | null>(null);
   const [active, setActive] = useState<SectionId>("home");
+  const [hidden, setHidden] = useState(false);
 
   const rootRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -160,20 +158,42 @@ export default function BottomMenu() {
     return setupSectionObserver((id) => setActive(id as SectionId));
   }, []);
 
-  // インジケータの座標。メニュー閉時は原点へ畳む
-  const activeCoord = COORD_BY_ID.get(active);
-  const indicatorStyle =
-    open && activeCoord
-      ? { "--tx": `${activeCoord.tx}px`, "--ty": `${activeCoord.ty}px` }
-      : { "--tx": "0px", "--ty": "0px" };
+  // スクロール方向でメニューを出し入れする。下スクロールで表示 / 上スクロールで隠す
+  useEffect(() => {
+    let lastY = window.scrollY;
+
+    const handleScroll = () => {
+      const y = window.scrollY;
+      const delta = y - lastY;
+
+      // 微小な揺れは無視してチャタリングを防ぐ
+      if (Math.abs(delta) < 8) {
+        return;
+      }
+
+      if (delta > 0) {
+        setHidden(false);
+      } else {
+        // 隠す際は展開中のメニューも畳む
+        setHidden(true);
+        closeAll();
+      }
+
+      lastY = y;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <div ref={rootRef} class={styles.root} data-open={open ? "" : undefined}>
+    <div ref={rootRef} class={styles.root} data-open={open ? "" : undefined} data-hidden={hidden ? "" : undefined}>
       {/* Works popup: カテゴリの縦リスト。常設し data-open で出し分ける */}
       <div class={`${styles.popup} ${styles.popupWorks}`} data-open={popup === "works" ? "" : undefined}>
         <ul class={styles.popupList}>
           {CATEGORY_ORDER.map((category) => {
             const CategoryIcon = CATEGORY_ICONS[category];
+
             return (
               <li key={category}>
                 <button type="button" class={styles.popupItem} onClick={() => handleCategory(category)}>
@@ -191,13 +211,7 @@ export default function BottomMenu() {
         <ul class={styles.popupList}>
           {CONTACT_LINKS.map(({ label, href, external, Icon }) => (
             <li key={label}>
-              <a
-                class={styles.popupItem}
-                href={href}
-                target={external ? "_blank" : undefined}
-                rel={external ? "noopener noreferrer" : undefined}
-                onClick={closeAll}
-              >
+              <a class={styles.popupItem} href={href} target={external ? "_blank" : undefined} onClick={closeAll}>
                 <Icon class={styles.popupIcon} />
                 <span class={styles.popupLabel}>{label}</span>
               </a>
@@ -206,12 +220,10 @@ export default function BottomMenu() {
         </ul>
       </div>
 
-      {/* 現在地に吸着するインジケータ(リング)。fanItem と同座標系・pointer-events なし */}
-      <span class={styles.indicator} style={indicatorStyle} aria-hidden="true" />
-
       {ITEMS.map(({ id, label, tx, ty, i }) => {
         const NavIcon = NAV_ICONS[id];
         const isPopup = id === "works" || id === "contact";
+
         return (
           <button
             key={id}
@@ -225,6 +237,7 @@ export default function BottomMenu() {
             onClick={() => handleFanItem(id)}
           >
             <NavIcon class={styles.fanIcon} />
+            <span class={styles.fanLabel}>{label}</span>
           </button>
         );
       })}
@@ -240,11 +253,11 @@ export default function BottomMenu() {
             if (prev) {
               setPopup(null);
             }
+
             return !prev;
           });
         }}
       >
-        <span class={styles.dot} aria-hidden="true" />
         <span class={styles.menuLabel}>menu</span>
       </button>
     </div>

@@ -10,6 +10,13 @@
   /* ボタン自体は pointer-events を持つが、コンテナの空き領域はクリックを素通しさせる */
   pointer-events: none;
   padding-bottom: 1.5rem;
+  /* スクロールでの出し入れ。出現アニメと同じ motion を全体に当てる */
+  transition: transform 0.6s var(--ease-back);
+}
+
+/* 上スクロール時は下へ畳んで隠す(出現アニメの逆再生) */
+.root[data-hidden] {
+  transform: translateY(150%);
 }
 
 .root > * {
@@ -22,8 +29,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.6rem 1.4rem;
-  border: 1px solid var(--color-border);
+  padding: 0.8rem 1.4rem;
+  border: 2px solid var(--color-border);
   border-radius: 9999px;
   background: var(--color-bg);
   color: var(--color-text-head);
@@ -31,16 +38,13 @@
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(103, 56, 56, 0.12);
   /* エントランスの transform を扇の原点コンテナと分離するため menuButton 自身に当てる */
   animation: entrance 0.6s var(--ease-back) 0.4s both;
-}
+  transition: scale 0.15s var(--ease-back);
 
-.dot {
-  width: 0.4rem;
-  height: 0.4rem;
-  border-radius: 50%;
-  background: var(--color-button-bg);
+  &:active {
+    scale: 0.96;
+  }
 }
 
 .menuLabel {
@@ -63,18 +67,19 @@
   /* ピル中央(コンテナ下端の中央付近)を原点にする。原点はピルの高さぶん上にずらす */
   bottom: 1.5rem;
   left: 50%;
-  width: 44px;
-  height: 44px;
-  margin-left: -22px;
+  width: 72px;
+  height: 72px;
+  /* 幅の半分。left:50% 基準で水平中央に揃える */
+  margin-left: -36px;
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--color-border);
+  border: 2px solid var(--color-border);
   border-radius: 50%;
   background: var(--color-bg);
   color: var(--color-text-head);
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(103, 56, 56, 0.1);
   /* 閉状態: 原点に畳んで非表示。visibility でタブ順からも除外する */
   transform: translate(0, 0) scale(0.3);
   opacity: 0;
@@ -84,12 +89,24 @@
     opacity 0.25s ease,
     visibility 0s linear 0.35s,
     background-color 0.2s ease,
-    color 0.2s ease;
+    color 0.2s ease,
+    scale 0.15s var(--ease-back);
+
+  &:active {
+    scale: 0.99;
+  }
 }
 
 .fanIcon {
   width: 22px;
   height: 22px;
+}
+
+.fanLabel {
+  font-family: var(--font-poppins);
+  font-size: 0.75rem;
+  line-height: 1;
+  margin-top: 2px;
 }
 
 .root[data-open] .fanItem {
@@ -107,36 +124,10 @@
   color: var(--color-bg);
 }
 
-/* --- 現在地インジケータ(リング) --- */
-
-.indicator {
-  position: absolute;
-  bottom: 1.5rem;
-  left: 50%;
-  width: 52px;
-  height: 52px;
-  margin-left: -26px;
-  border-radius: 50%;
-  border: 2px solid var(--color-border-emphasis);
-  pointer-events: none;
-  opacity: 0;
-  transform: translate(0, 0);
-  transition:
-    transform 0.4s var(--ease-back),
-    opacity 0.25s ease;
-}
-
-.root[data-open] .indicator {
-  opacity: 1;
-  transform: translate(var(--tx), var(--ty));
-}
-
 /* --- ふきだし popup --- */
 
 .popup {
   position: absolute;
-  /* アーチ頂点(RADIUS=88px)+余白ぶん上、コンテナ中央に固定 */
-  bottom: calc(1.5rem + 88px + 56px);
   left: 50%;
   width: max-content;
   min-width: 9rem;
@@ -144,10 +135,10 @@
   transform-origin: 50% 100%;
   opacity: 0;
   visibility: hidden;
-  border: 1px solid var(--color-border);
+  border: 2px solid var(--color-border);
   border-radius: 16px;
   background: var(--color-bg);
-  box-shadow: 0 8px 24px rgba(103, 56, 56, 0.14);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 0.5rem;
   transition:
     transform 0.3s var(--ease-back),
@@ -170,17 +161,37 @@
   width: 12px;
   height: 12px;
   background: var(--color-bg);
-  border-right: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
+  border-right: 2px solid var(--color-border);
+  border-bottom: 2px solid var(--color-border);
   transform: rotate(45deg);
 }
 
-.popupWorks::after {
-  left: 35%;
+.popupWorks {
+  /* Worksボタン(扇の右寄り, angle70°)の真上。
+     ボタン中心は原点から右へ cos70°×117≈40px、上端は 1.5rem+sin70°×117+72≈1.5rem+182px。そこから 16px 上に本体下端を置く */
+  bottom: calc(1.5rem + 182px + 16px);
+  left: calc(50% + 40px);
+  z-index: 1;
+
+  &::after {
+    /* 真下のボタンを指すよう中央へ(width 12px ぶん補正) */
+    left: 50%;
+    margin-left: -6px;
+  }
 }
 
-.popupContact::after {
-  left: 65%;
+.popupContact {
+  /* コンタクトボタン(扇の右端, angle30°)の真上。
+     ボタン中心は原点から右へ cos30°×117≈101px、上端は 1.5rem+sin30°×117+72≈1.5rem+131px。そこから 16px 上に本体下端を置く */
+  bottom: calc(1.5rem + 131px + 16px);
+  left: calc(50% + 101px);
+  z-index: 1;
+
+  &::after {
+    /* 真下のボタンを指すよう中央へ(width 12px ぶん補正) */
+    left: 50%;
+    margin-left: -6px;
+  }
 }
 
 .popupList {
@@ -231,11 +242,13 @@
     animation: none;
   }
 
+  .root {
+    transition-duration: 0s;
+  }
+
   /* 開状態側で transition-delay を再宣言しているため、同等の specificity で無効化する */
   .root .fanItem,
   .root[data-open] .fanItem,
-  .root .indicator,
-  .root[data-open] .indicator,
   .root .popup,
   .root .popup[data-open] {
     transition-duration: 0s;

@@ -9,6 +9,10 @@
   padding: 0 1.5rem;
   /* ボトムメニューからのスクロール時に上端へ余白を確保する */
   scroll-margin-top: 1.5rem;
+
+  @media (width >= 768px) {
+    padding: 0 4rem;
+  }
 }
 
 .neko {
@@ -28,6 +32,10 @@
 
 .greeting {
   font-size: 1rem;
+
+  @media (width >= 768px) {
+    font-size: 1.5rem;
+  }
 }
 
 .name {
@@ -36,11 +44,20 @@
   font-size: 2.5rem;
   font-weight: 500;
   letter-spacing: 0.025rem;
+
+  @media (width >= 768px) {
+    font-size: 4rem;
+  }
 }
 
 .suffix {
   margin-left: 0.5rem;
   font-size: 1rem;
+
+  @media (width >= 768px) {
+    margin-left: 0.75rem;
+    font-size: 1.5rem;
+  }
 }
 
 .description {

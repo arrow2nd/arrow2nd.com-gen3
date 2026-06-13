@@ -1,6 +1,10 @@
 .container {
   margin-top: 1.5rem;
   padding: 0 1rem 1.5rem;
+
+  @media (width >= 768px) {
+    padding: 0 3rem 1.5rem;
+  }
 }
 
 .title {

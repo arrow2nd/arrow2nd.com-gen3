@@ -11,6 +11,9 @@
 .DS_Store
 *.pem
 
+# build-images.mjs が PNG から生成する WebP
+/public/images/
+
 # debug
 npm-debug.log*
 .pnpm-debug.log*

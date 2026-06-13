@@ -1,11 +1,32 @@
 .root {
   margin-top: 2.5rem;
 
-  > * + * {
+  > :is(h1, h2, h3, h4, h5, h6):not(:first-child) {
     margin-top: 2rem;
   }
 
-  > :is(h1, h2, h3, h4, h5, h6) + p {
+  > :is(h1, h2, h3, h4, h5, h6) + :is(p, ul) {
     margin-top: 0.5rem;
+  }
+}
+
+/* 「・」マーカー付きリスト */
+.list {
+  padding-left: 1rem;
+  list-style-type: "・";
+
+  /* ネストや項目間の余白。root の `> * + *` は直下要素のみが対象なので li 用に別途指定する */
+  li + li {
+    margin-top: 0.25rem;
+  }
+}
+
+.link {
+  color: var(--color-text-head);
+  text-decoration: underline;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: var(--color-text-sub);
   }
 }

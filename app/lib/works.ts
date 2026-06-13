@@ -5,6 +5,8 @@ type Frontmatter = {
   title: string;
   images: string[];
   link?: string;
+  // ISO 形式 (YYYY-MM-DD)。文字列比較でソートできる
+  createdAt: string;
 };
 
 // MDX(remark-mdx-frontmatter)がビルド時に生成するモジュールの形
@@ -19,31 +21,36 @@ export type Work = {
   title: string;
   images: string[];
   link?: string;
+  createdAt: string;
   Content: WorkModule["default"];
 };
 
-const modules = import.meta.glob<WorkModule>("../data/works/*/*.mdx", { eager: true });
+const modules = import.meta.glob<WorkModule>("../data/works/*/*/index.mdx", { eager: true });
 
-const works: Work[] = Object.entries(modules).flatMap(([path, mod]) => {
-  const matched = path.match(/works\/([^/]+)\/([^/]+)\.mdx$/);
+const works: Work[] = Object.entries(modules)
+  .flatMap(([path, mod]) => {
+    const matched = path.match(/works\/([^/]+)\/([^/]+)\/index\.mdx$/);
 
-  if (!matched) {
-    return [];
-  }
+    if (!matched) {
+      return [];
+    }
 
-  const [, category, slug] = matched;
+    const [, category, slug] = matched;
 
-  return [
-    {
-      slug,
-      category: category as WorkCategory,
-      title: mod.frontmatter.title,
-      images: mod.frontmatter.images,
-      link: mod.frontmatter.link,
-      Content: mod.default,
-    },
-  ];
-});
+    return [
+      {
+        slug,
+        category: category as WorkCategory,
+        title: mod.frontmatter.title,
+        images: mod.frontmatter.images,
+        link: mod.frontmatter.link,
+        createdAt: mod.frontmatter.createdAt,
+        Content: mod.default,
+      },
+    ];
+  })
+  // 一覧・slug 列挙の共通の並び順として制作日の新しい順にしておく
+  .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 
 export function getAllWorksByCategory(): Map<WorkCategory, Work[]> {
   const map = new Map<WorkCategory, Work[]>();

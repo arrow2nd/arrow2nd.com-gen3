@@ -1,11 +1,21 @@
 .root {
   margin-top: 1rem;
+  /* .item のレイアウトを置かれた場所の幅で切り替えるためのコンテナ */
+  container-type: inline-size;
 }
 
 .item {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+}
+
+/* biome がネストした @container 内のプロパティ上書きを重複と誤検知するため、トップレベルに書く */
+@container (width < 320px) {
+  .item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
 .item + .item {

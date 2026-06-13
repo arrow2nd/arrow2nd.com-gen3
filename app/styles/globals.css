@@ -1,8 +1,11 @@
+/* breakpoint: md=768px / lg=1024px — `@media (width >= 768px)` 等の range 構文で統一する。詳細は docs/adr/0009 */
+
 :root {
   /* next/font の variable の置き換え */
   --font-poppins: "Poppins", sans-serif;
 
   --color-text: #8a6864;
+  --color-text-sub: #cebfbf;
   --color-text-head: #673838;
   --color-bg: #fffefe;
   --color-button-bg: #673838;

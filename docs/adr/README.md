@@ -12,3 +12,4 @@ arrow2nd.com (gen3) の技術的な意思決定の記録。
 | [0006](./0006-drop-storybook.md) | Storybook を廃止する | 採用 |
 | [0007](./0007-self-host-fonts-with-fontsource.md) | フォントは @fontsource で自己ホストする | 採用 |
 | [0008](./0008-budoux-parser-shim.md) | budoux は parser を直接参照する | 採用 |
+| [0009](./0009-single-breakpoint-hardcoded.md) | ブレークポイントは固定セットをハードコードする | 採用 |
