@@ -1,6 +1,6 @@
 import BudouX from "../BudouX/budoux";
-import styles from "./index.module.css";
 import Neko from "../Neko";
+import styles from "./index.module.css";
 
 export default function Meishi() {
   return (

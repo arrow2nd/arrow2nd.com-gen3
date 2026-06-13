@@ -1,6 +1,7 @@
 import { ssgParams } from "hono/ssg";
 import { createRoute } from "honox/factory";
 import WorkDetail from "../../../components/WorkDetail";
+import { buildCreativeWorkJsonLd } from "../../../lib/json-ld";
 import { getAllSlugs, getWorkBySlug } from "../../../lib/works";
 import styles from "./index.module.css";
 
@@ -27,6 +28,14 @@ export default createRoute(
         </div>
         <WorkDetail work={work} />
       </div>,
+      {
+        title: `${work.title} | arrow2nd`,
+        description: work.title,
+        imageUrl: work.images[0],
+        url: `/works/${work.slug}`,
+        article: true,
+        jsonLd: buildCreativeWorkJsonLd(work),
+      },
     );
   },
 );
