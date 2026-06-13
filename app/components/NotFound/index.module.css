@@ -1,28 +1,63 @@
+.main {
+  margin-bottom: 4rem;
+}
+
 .root {
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  padding: 6rem 1rem;
+  align-items: flex-start;
+  justify-content: center;
+  height: 100svh;
+  overflow: hidden;
+  padding: 0 1.5rem;
+  /* ボトムメニューからのスクロール時に上端へ余白を確保する */
+  scroll-margin-top: 1.5rem;
+
+  @media (width >= 768px) {
+    padding: 0 4rem;
+  }
+}
+
+.neko {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 50vw;
+  height: auto;
 }
 
 .heading {
-  font-family: var(--font-poppins);
-  font-size: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.status {
+  font-size: 1rem;
+
+  @media (width >= 768px) {
+    font-size: 1.5rem;
+  }
+}
+
+.title {
   color: var(--color-text-head);
+  font-family: var(--font-poppins);
+  font-size: 2.5rem;
+  font-weight: 500;
+  letter-spacing: 0.025rem;
+
+  @media (width >= 768px) {
+    font-size: 4rem;
+  }
 }
 
-.backLink {
-  display: block;
-  padding: 0.5rem 2rem;
-  width: fit-content;
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  border: 1px solid var(--color-border-emphasis);
-  border-radius: 16px 8px 8px 8px;
-  transition: transform 0.15s ease-out;
+.description {
+  margin-top: 4rem;
 }
 
-.backLink:active {
-  transform: scale(0.9);
+.guide {
+  margin-top: 1.5rem;
 }
