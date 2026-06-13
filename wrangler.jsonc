@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "arrow2nd-com",
+  "name": "arrow2nd-com-gen3",
   "compatibility_date": "2026-05-01",
   // SSG成果物をそのまま配信する assets-only Worker(main なし)
   "assets": {
