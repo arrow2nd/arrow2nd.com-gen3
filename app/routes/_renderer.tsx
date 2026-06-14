@@ -16,7 +16,7 @@ type RendererComponentProps = {
   jsonLd?: JsonLd | JsonLd[];
 };
 
-const SITE_URL = "https://www.arrow2nd.com/";
+const SITE_URL = "https://arrow2nd.com/";
 const DEFAULT_IMAGE_URL = "https://avatars.githubusercontent.com/u/44780846?v=4";
 
 const toAbsoluteUrl = (pathOrUrl: string) => new URL(pathOrUrl, SITE_URL).toString();

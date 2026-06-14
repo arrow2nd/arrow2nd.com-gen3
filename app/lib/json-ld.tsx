@@ -1,7 +1,7 @@
 import { raw } from "hono/html";
 import type { Work } from "./works";
 
-const SITE_URL = "https://www.arrow2nd.com";
+const SITE_URL = "https://arrow2nd.com";
 const PERSON_ID = `${SITE_URL}/#person`;
 
 type JsonLdValue = string | number | boolean | null | JsonLd | JsonLdValue[];
