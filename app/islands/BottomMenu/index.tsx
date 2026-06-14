@@ -7,6 +7,7 @@ import {
   GitHubIcon,
   HomeIcon,
   MailIcon,
+  PhotoIcon,
   StickerIcon,
   ToolIcon,
   WebIcon,
@@ -39,9 +40,30 @@ const ITEMS = [
 }));
 
 const CONTACT_LINKS = [
-  { label: "X", href: "https://x.com/_arrow2nd", external: true, Icon: XIcon },
-  { label: "GitHub", href: "https://github.com/arrow2nd", external: true, Icon: GitHubIcon },
-  { label: "Mail", href: "mailto:contact@arrow2nd.com", external: false, Icon: MailIcon },
+  {
+    label: "X",
+    href: "https://x.com/_arrow2nd",
+    external: true,
+    Icon: XIcon,
+  },
+  {
+    label: "GitHub",
+    href: "https://github.com/arrow2nd",
+    external: true,
+    Icon: GitHubIcon,
+  },
+  {
+    label: "katasu.me",
+    href: "https://katasu.me/user/arrow2nd",
+    external: true,
+    Icon: PhotoIcon,
+  },
+  {
+    label: "Mail",
+    href: "mailto:contact@arrow2nd.com",
+    external: false,
+    Icon: MailIcon,
+  },
 ] as const;
 
 const CATEGORY_ICONS = {
