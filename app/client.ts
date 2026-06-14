@@ -15,11 +15,12 @@ import "@fontsource/poppins/500.css";
 // dev は Vite が <style> を注入し、prod は client ビルドの CSS アセットに集約される
 const cssModules = import.meta.glob("./**/*.module.css", { eager: true });
 
-// Vite は CSS Modules の export が未使用だと CSS ごと tree-shake してしまうので、参照だけ残しておく
+// HACK: Vite は CSS Modules の export が未使用だと CSS ごと tree-shake してしまうので、参照だけ残しておく
 (globalThis as Record<string, unknown>).__cssModules = cssModules;
 
 createClient({
   triggerHydration: async (hydrate) => {
+    // HACK:
     // fragment を動的挿入するドロワーから島を再ハイドレーションできるよう退避しておく。
     // (<honox-island> は customElement ではないので、挿入しても自動ではハイドレーションされない)
     (globalThis as Record<string, unknown>).__hydrateIslands = hydrate;
