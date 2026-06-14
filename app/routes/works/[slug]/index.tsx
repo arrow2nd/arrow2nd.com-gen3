@@ -30,7 +30,7 @@ export default createRoute(
       </div>,
       {
         title: `${work.title} | arrow2nd`,
-        description: work.title,
+        description: work.shortDescription,
         imageUrl: work.images[0],
         url: `/works/${work.slug}`,
         article: true,

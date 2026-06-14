@@ -4,6 +4,7 @@ import { CATEGORY_ORDER, type WorkCategory } from "./categories";
 type Frontmatter = {
   title: string;
   images: string[];
+  shortDescription: string;
   // ISO 形式 (YYYY-MM-DD)。このまま文字列比較でソートできる
   createdAt: string;
 };
@@ -18,6 +19,7 @@ export type Work = {
   slug: string;
   category: WorkCategory;
   title: string;
+  shortDescription: string;
   images: string[];
   createdAt: string;
   Content: WorkModule["default"];
@@ -40,6 +42,7 @@ const works: Work[] = Object.entries(modules)
         slug,
         category: category as WorkCategory,
         title: mod.frontmatter.title,
+        shortDescription: mod.frontmatter.shortDescription,
         images: mod.frontmatter.images,
         createdAt: mod.frontmatter.createdAt,
         Content: mod.default,

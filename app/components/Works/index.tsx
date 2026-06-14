@@ -18,7 +18,13 @@ export default function Works() {
           </DashedHeading>
           <div class={styles.cards}>
             {works.map((work) => (
-              <Card key={work.slug} slug={work.slug} title={work.title} thumbnail={work.images[0]} />
+              <Card
+                key={work.slug}
+                slug={work.slug}
+                title={work.title}
+                shortDescription={work.shortDescription}
+                thumbnail={work.images[0]}
+              />
             ))}
           </div>
         </div>

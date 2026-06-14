@@ -48,6 +48,7 @@ export function buildCreativeWorkJsonLd(work: Work): JsonLd {
     "@type": "CreativeWork",
     "@id": `${pageUrl}#creative-work`,
     name: work.title,
+    description: work.shortDescription,
     url: pageUrl,
     mainEntityOfPage: pageUrl,
     dateCreated: work.createdAt,
