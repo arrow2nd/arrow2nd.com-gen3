@@ -4,7 +4,7 @@
   scroll-margin-top: 1.5rem;
 
   @media (width >= 768px) {
-    padding: 0 4rem;
+    padding: 0 4rem 3rem;
   }
 }
 
