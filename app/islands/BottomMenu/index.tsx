@@ -62,7 +62,6 @@ export default function BottomMenu() {
   const [open, setOpen] = useState(false);
   const [popup, setPopup] = useState<PopupId | null>(null);
   const [active, setActive] = useState<SectionId>("home");
-  const [hidden, setHidden] = useState(false);
 
   const rootRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -158,36 +157,8 @@ export default function BottomMenu() {
     return setupSectionObserver((id) => setActive(id as SectionId));
   }, []);
 
-  // スクロール方向でメニューを出し入れする。下スクロールで表示 / 上スクロールで隠す
-  useEffect(() => {
-    let lastY = window.scrollY;
-
-    const handleScroll = () => {
-      const y = window.scrollY;
-      const delta = y - lastY;
-
-      // 微小な揺れは無視してチャタリングを防ぐ
-      if (Math.abs(delta) < 8) {
-        return;
-      }
-
-      if (delta > 0) {
-        setHidden(false);
-      } else {
-        // 隠す際は展開中のメニューも畳む
-        setHidden(true);
-        closeAll();
-      }
-
-      lastY = y;
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
-    <div ref={rootRef} class={styles.root} data-open={open ? "" : undefined} data-hidden={hidden ? "" : undefined}>
+    <div ref={rootRef} class={styles.root} data-open={open ? "" : undefined}>
       {/* Works popup: カテゴリの縦リスト。常設し data-open で出し分ける */}
       <div class={`${styles.popup} ${styles.popupWorks}`} data-open={popup === "works" ? "" : undefined}>
         <ul class={styles.popupList}>
