@@ -2,8 +2,6 @@
 
 🐟️ ポートフォリオサイト
 
-HonoX + hono/jsx + CSS Modules + SSG (Cloudflare Workers Assets)
-
 ## Getting Started
 
 ```bash
