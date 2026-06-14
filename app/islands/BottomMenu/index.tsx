@@ -229,7 +229,7 @@ export default function BottomMenu() {
           });
         }}
       >
-        <span class={styles.menuLabel}>menu</span>
+        <span class={styles.menuLabel}>{open ? "close" : "menu"}</span>
       </button>
     </div>
   );

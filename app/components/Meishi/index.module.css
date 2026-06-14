@@ -28,6 +28,7 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
+  margin-top: 2rem; /** ちょっと上に寄って見えるので調整 */
 }
 
 .greeting {
@@ -41,7 +42,7 @@
 .name {
   color: var(--color-text-head);
   font-family: var(--font-poppins);
-  font-size: 2.5rem;
+  font-size: 3rem;
   font-weight: 500;
   letter-spacing: 0.025rem;
 
