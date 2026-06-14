@@ -17,7 +17,7 @@
      開閉アニメーションの始点・終点は CSS だけで調整できる。
      resting を画面外にしておくことで、JS適用前に描画されても最終位置が見えない */
   transform: translateY(110%);
-  scale: 0.98;
+  scale: 0.9;
   filter: blur(8px);
   transition:
     transform 0.5s cubic-bezier(0.32, 0.72, 0, 1),
