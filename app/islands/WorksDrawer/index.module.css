@@ -41,8 +41,7 @@
   }
 
   &::backdrop {
-    /* テーマ色を透明度だけ落として敷く。明度等は color-base から実行時に解決される */
-    background: oklch(from var(--color-base) l c h / 0.2);
+    background: var(--color-backdrop);
     backdrop-filter: blur(4px);
     /* ドラッグ量(--drag-progress: 0〜1)に応じてフェード。dialog から継承される */
     opacity: calc(1 - var(--drag-progress, 0));
