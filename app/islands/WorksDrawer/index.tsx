@@ -35,7 +35,7 @@ export default function WorksDrawer() {
 
   return (
     <dialog ref={dialogRef} class={styles.content} aria-label="作品詳細">
-      <div class={styles.handle} data-drawer-handle>
+      <div class={styles.handle} data-drawer-handle aria-hidden="true">
         {Array.from({ length: 10 }, (_, i) => (
           <span key={i.toString()} class={styles.handleDot} />
         ))}

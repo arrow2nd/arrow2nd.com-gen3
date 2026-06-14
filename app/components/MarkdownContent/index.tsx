@@ -11,7 +11,9 @@ const heading =
 const list: FC<JSX.IntrinsicElements["ul"]> = (props) => <ul {...props} class={styles.list} />;
 
 // 下線付きリンク。href 等の属性は MDX から渡るものをそのまま透過させる
-const link: FC<JSX.IntrinsicElements["a"]> = (props) => <a {...props} target="_blank" class={styles.link} />;
+const link: FC<JSX.IntrinsicElements["a"]> = (props) => (
+  <a {...props} target="_blank" rel="noopener noreferrer" class={styles.link} />
+);
 
 // MDX本文の各要素をサイトのスタイルに差し替える
 const components: Record<string, FC> = {

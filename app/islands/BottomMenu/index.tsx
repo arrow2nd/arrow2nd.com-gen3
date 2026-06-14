@@ -63,7 +63,7 @@ export default function BottomMenu() {
   const [popup, setPopup] = useState<PopupId | null>(null);
   const [active, setActive] = useState<SectionId>("home");
 
-  const rootRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   // reduce 指定時はスクロールアニメーションを無効化する
@@ -158,7 +158,7 @@ export default function BottomMenu() {
   }, []);
 
   return (
-    <div ref={rootRef} class={styles.root} data-open={open ? "" : undefined}>
+    <nav ref={rootRef} class={styles.root} data-open={open ? "" : undefined} aria-label="メインメニュー">
       {/* Works popup: カテゴリの縦リスト。常設し data-open で出し分ける */}
       <div class={`${styles.popup} ${styles.popupWorks}`} data-open={popup === "works" ? "" : undefined}>
         <ul class={styles.popupList}>
@@ -231,6 +231,6 @@ export default function BottomMenu() {
       >
         <span class={styles.menuLabel}>{open ? "close" : "menu"}</span>
       </button>
-    </div>
+    </nav>
   );
 }

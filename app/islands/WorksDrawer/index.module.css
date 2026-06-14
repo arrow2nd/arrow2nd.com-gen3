@@ -20,33 +20,34 @@
   scale: 0.9;
   filter: blur(8px);
   transition:
-    transform 0.5s cubic-bezier(0.32, 0.72, 0, 1),
-    scale 0.8s cubic-bezier(0.32, 0.72, 0, 1),
-    filter 0.8s cubic-bezier(0.32, 0.72, 0, 1);
+    transform 0.5s var(--ease-drawer),
+    scale 0.8s var(--ease-drawer),
+    filter 0.8s var(--ease-drawer);
 
   @media (width >= 768px) {
     margin: 1rem auto;
     max-width: 768px;
     max-height: calc(100vh - 2rem);
   }
-}
 
-.content[open] {
-  display: flex;
-}
+  &[open] {
+    display: flex;
+  }
 
-.content[data-state="open"] {
-  transform: translateY(0);
-  scale: 1;
-  filter: blur(0);
-}
+  &[data-state="open"] {
+    transform: translateY(0);
+    scale: 1;
+    filter: blur(0);
+  }
 
-.content::backdrop {
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(4px);
-  /* ドラッグ量(--drag-progress: 0〜1)に応じてフェード。dialog から継承される */
-  opacity: calc(1 - var(--drag-progress, 0));
-  transition: opacity 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  &::backdrop {
+    /* テーマ色を透明度だけ落として敷く。明度等は color-base から実行時に解決される */
+    background: oklch(from var(--color-base) l c h / 0.2);
+    backdrop-filter: blur(4px);
+    /* ドラッグ量(--drag-progress: 0〜1)に応じてフェード。dialog から継承される */
+    opacity: calc(1 - var(--drag-progress, 0));
+    transition: opacity 0.4s var(--ease-drawer);
+  }
 }
 
 .handle {
