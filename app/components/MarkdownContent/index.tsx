@@ -7,15 +7,15 @@ const heading =
   (as: "h1" | "h2" | "h3" | "h4" | "h5" | "h6"): FC =>
   ({ children }: PropsWithChildren) => <DashedHeading as={as}>{children}</DashedHeading>;
 
-// 「・」マーカー付きリスト。ネストした ul も MDX が同じコンポーネントに置換するため自動で揃う
+// 「・」マーカー付きリスト。ネストした ul も MDX が同じコンポーネントに置き換えるので、自動で揃う
 const list: FC<JSX.IntrinsicElements["ul"]> = (props) => <ul {...props} class={styles.list} />;
 
-// 下線付きリンク。href 等の属性は MDX から渡るものをそのまま透過させる
+// 下線付きリンク。href などの属性は MDX から渡ってくるものをそのまま透過させる
 const link: FC<JSX.IntrinsicElements["a"]> = (props) => (
   <a {...props} target="_blank" rel="noopener noreferrer" class={styles.link} />
 );
 
-// MDX本文の各要素をサイトのスタイルに差し替える
+// MDX 本文の各要素を、サイトのスタイルに差し替える
 const components: Record<string, FC> = {
   h1: heading("h1"),
   h2: heading("h2"),

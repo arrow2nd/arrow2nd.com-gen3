@@ -7,7 +7,7 @@ type Props = {
   work: Work;
 };
 
-// 作品詳細の中身。フルページ(/works/:slug)とドロワー(fragment)で共有する
+// 作品詳細の中身。フルページ(/works/:slug)とドロワー(fragment)で使い回す
 export default function WorkDetail({ work }: Props) {
   return (
     <>

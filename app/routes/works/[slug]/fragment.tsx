@@ -3,7 +3,7 @@ import { createRoute } from "honox/factory";
 import WorkDetail from "../../../components/WorkDetail";
 import { getAllSlugs, getWorkBySlug } from "../../../lib/works";
 
-// ドロワーに流し込む部分HTML。c.html なのでレンダラー(_renderer)を通らない
+// ドロワーに流し込む部分 HTML。c.html なのでレンダラー(_renderer)は通らない
 export default createRoute(
   ssgParams(() => getAllSlugs().map((slug) => ({ slug }))),
   (c) => {

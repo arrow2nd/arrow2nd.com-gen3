@@ -6,7 +6,7 @@ import { getAllSlugs, getWorkBySlug } from "../../../lib/works";
 import styles from "./index.module.css";
 
 export default createRoute(
-  // SSG時に全slugを列挙して具象パスでレンダリングさせる
+  // SSG 時に全 slug を列挙して、具象パスでレンダリングさせる
   ssgParams(() => getAllSlugs().map((slug) => ({ slug }))),
   (c) => {
     const work = getWorkBySlug(c.req.param("slug") ?? "");

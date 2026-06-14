@@ -19,12 +19,12 @@ import { setupSectionObserver } from "./observer";
 type SectionId = "home" | "about" | "works" | "contact";
 type PopupId = "works" | "contact";
 
-// 扇の半径(px)。ピル中央を原点に各ボタンを配置する。
-// 72px ボタンが隣と重ならないよう、中心間距離 2*R*sin(20°) ≧ ボタン径+隙間 を満たす値にしている
+// 扇の半径(px)。ピルの中央を原点にして各ボタンを配置する。
+// 72px のボタンが隣と重ならないよう、中心間距離 2*R*sin(20°) ≧ ボタン径+隙間 を満たす値にしている
 const RADIUS = 117;
 
-// 4ボタンの配置角度(度, 0=右 / 90=上)。左→右に Home/About/Works/Contact を並べる。
-// 座標はモジュールスコープで事前計算し、CSS 変数で各ボタンへ渡す。
+// 4ボタンの配置角度(度, 0=右 / 90=上)。左から右に Home/About/Works/Contact を並べる。
+// 座標はモジュールスコープで先に計算しておき、CSS 変数で各ボタンに渡す
 const ITEMS = [
   { id: "home", angle: 150, label: "Home" },
   { id: "about", angle: 110, label: "About" },
@@ -66,7 +66,7 @@ export default function BottomMenu() {
   const rootRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
-  // reduce 指定時はスクロールアニメーションを無効化する
+  // reduce が指定されているときはスクロールアニメーションを無効にする
   const getScrollBehavior = (): ScrollBehavior => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return "auto";
@@ -82,7 +82,7 @@ export default function BottomMenu() {
   const scrollToSection = (id: string) => {
     const behavior = getScrollBehavior();
 
-    // home はトップへのスクロール。ペライチ表示中はそのままスクロールする
+    // home はトップへスクロール。ペライチを表示中ならそのままスクロールする
     if (id === "home" && location.pathname === "/") {
       window.scrollTo({ top: 0, behavior });
       return;
@@ -94,14 +94,14 @@ export default function BottomMenu() {
       return;
     }
 
-    // 詳細ページなど対象が無いページではトップへ遷移する
+    // 詳細ページなど対象が無いページでは、トップへ遷移する
     location.assign(id === "home" ? "/" : `/#${id}`);
   };
 
-  // 扇ボタンの操作: Works/Contact は popup トグル、それ以外はスクロールして全閉
+  // 扇ボタンの操作。Works/Contact は popup をトグル、それ以外はスクロールして全部閉じる
   const handleFanItem = (id: SectionId) => {
     if (id === "works" || id === "contact") {
-      // 同じボタン再タップでトグル閉
+      // 同じボタンをもう一度タップしたら閉じる
       setPopup((prev) => (prev === id ? null : id));
       return;
     }
@@ -115,7 +115,7 @@ export default function BottomMenu() {
     closeAll();
   };
 
-  // 外側クリック・Esc の document リスナー
+  // 外側クリックと Esc を拾う document リスナー
   useEffect(() => {
     const handlePointerDown = (e: MouseEvent) => {
       const root = rootRef.current;
@@ -132,7 +132,7 @@ export default function BottomMenu() {
         return;
       }
 
-      // popup が開いていれば popup のみ閉じる。なければ全閉してメニューボタンへフォーカス復帰
+      // popup が開いていれば popup だけ閉じる。なければ全部閉じて、メニューボタンへフォーカスを戻す
       if (popup !== null) {
         setPopup(null);
         return;
@@ -152,14 +152,14 @@ export default function BottomMenu() {
     };
   }, [open, popup]);
 
-  // 現在地ハイライト
+  // 現在地のハイライト
   useEffect(() => {
     return setupSectionObserver((id) => setActive(id as SectionId));
   }, []);
 
   return (
     <nav ref={rootRef} class={styles.root} data-open={open ? "" : undefined} aria-label="メインメニュー">
-      {/* Works popup: カテゴリの縦リスト。常設し data-open で出し分ける */}
+      {/* Works popup。カテゴリの縦リスト。常に置いておき、data-open で出し分ける */}
       <div class={`${styles.popup} ${styles.popupWorks}`} data-open={popup === "works" ? "" : undefined}>
         <ul class={styles.popupList}>
           {CATEGORY_ORDER.map((category) => {
@@ -219,7 +219,7 @@ export default function BottomMenu() {
         class={styles.menuButton}
         aria-expanded={open}
         onClick={() => {
-          // メニューを閉じるときは popup も畳む
+          // メニューを閉じるときは popup も一緒に畳む
           setOpen((prev) => {
             if (prev) {
               setPopup(null);

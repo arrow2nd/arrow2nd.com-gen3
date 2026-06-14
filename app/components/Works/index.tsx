@@ -10,7 +10,7 @@ export default function Works() {
     <section id="works" class={styles.root}>
       <h2 class={styles.heading}>works</h2>
 
-      {/* Card の id={slug} と衝突しないよう works- プレフィックスを付与 */}
+      {/* Card の id={slug} と衝突しないよう、works- プレフィックスを付けておく */}
       {Array.from(worksByCategory.entries()).map(([category, works]) => (
         <div key={category} id={`works-${category}`} class={styles.section}>
           <DashedHeading as="h3" lang="en">

@@ -4,7 +4,7 @@ import { CATEGORY_ORDER, type WorkCategory } from "./categories";
 type Frontmatter = {
   title: string;
   images: string[];
-  // ISO 形式 (YYYY-MM-DD)。文字列比較でソートできる
+  // ISO 形式 (YYYY-MM-DD)。このまま文字列比較でソートできる
   createdAt: string;
 };
 
@@ -46,7 +46,7 @@ const works: Work[] = Object.entries(modules)
       },
     ];
   })
-  // 一覧・slug 列挙の共通の並び順として制作日の新しい順にしておく
+  // 一覧でも slug 列挙でも同じ並びにしたいので、制作日の新しい順にしておく
   .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 
 export function getAllWorksByCategory(): Map<WorkCategory, Work[]> {

@@ -1,11 +1,11 @@
-// 現在表示中のセクション id を監視し、変化時に onChange を呼ぶ。
-// 戻り値は破棄用の cleanup 関数。
+// 今表示しているセクションの id を監視して、変わったら onChange を呼ぶ。
+// 戻り値は後始末用の cleanup 関数
 export function setupSectionObserver(onChange: (id: string) => void): () => void {
   const sections = ["home", "about", "works"]
     .map((id) => document.getElementById(id))
     .filter((el): el is HTMLElement => el !== null);
 
-  // /works/:slug など対象セクションが無いページでは何もしない
+  // /works/:slug など対象セクションが無いページでは、何もしない
   if (sections.length === 0) {
     return () => {};
   }

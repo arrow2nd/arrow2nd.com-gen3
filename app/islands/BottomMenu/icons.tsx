@@ -1,11 +1,11 @@
 // Tabler Icons: https://tabler.io/icons
-// honox は island の default export を包むため、ここには default を置かず named export のみとする
+// honox は island の default export を包んでしまうので、ここには default を置かず named export だけにする
 
 type Props = {
   class?: string;
 };
 
-// 24x24 viewBox / fill currentColor / aria-hidden を全アイコン共通にするためのラッパー
+// 24x24 viewBox / fill currentColor / aria-hidden を全アイコンで共通にするためのラッパー
 function Icon({ class: className, children }: Props & { children: unknown }) {
   return (
     <svg

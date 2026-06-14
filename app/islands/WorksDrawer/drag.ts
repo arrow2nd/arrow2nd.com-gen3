@@ -5,14 +5,14 @@ const DRAG_THRESHOLD = 8;
 // 閉じる判定: 速度(px/ms) または ドロワー高さに対する移動量の割合
 const CLOSE_VELOCITY = 0.4;
 const CLOSE_DISTANCE_RATIO = 0.4;
-// 速度計算に使うサンプルの有効期間(ms)。途中で止めて離した場合に古い速度で閉じないため
+// 速度計算に使うサンプルの有効期間(ms)。途中で止めてから離したときに、古い速度で閉じないようにするため
 const VELOCITY_WINDOW_MS = 100;
 
 /**
- * 追従ドラッグ。
+ * 指に追従するドラッグ。
  *
  * 下方向に DRAG_THRESHOLD を超え、かつ(ハンドル起点 or 内側スクロールが先頭)のときだけ
- * ドラッグを確定し、ドロワーを指に追従させる。離した時の velocity / 移動量で閉じるか戻すかを決める。
+ * ドラッグを確定して、ドロワーを指に追従させる。離したときの velocity / 移動量で、閉じるか戻すかを決める。
  */
 export const setupDrag = (dialog: HTMLDialogElement, inner: HTMLDivElement, controller: Controller) => {
   let tracking = false;
@@ -23,7 +23,7 @@ export const setupDrag = (dialog: HTMLDialogElement, inner: HTMLDivElement, cont
   let samples: { t: number; y: number }[] = [];
 
   const onTouchMove = (e: TouchEvent) => {
-    // ドラッグ確定中のみネイティブスクロールを抑止(非passiveで登録)
+    // ドラッグ確定中だけネイティブスクロールを止める(非 passive で登録)
     if (dragging) {
       e.preventDefault();
     }
@@ -65,15 +65,15 @@ export const setupDrag = (dialog: HTMLDialogElement, inner: HTMLDivElement, cont
     }
 
     if (!dragging) {
-      // 下方向 + (ハンドル起点 or 内側スクロールが先頭) のときだけドラッグ確定
+      // 下方向 + (ハンドル起点 or 内側スクロールが先頭) のときだけドラッグを確定する
       if (dy > DRAG_THRESHOLD && (startedOnHandle || inner.scrollTop <= 0)) {
         dragging = true;
         dialog.setPointerCapture(e.pointerId);
         dialog.style.transition = "none";
-        // ドラッグ中は内側スクロールを止めて取り合いを防ぐ
+        // ドラッグ中は内側スクロールを止めて、スクロールの取り合いを防ぐ
         inner.style.overflow = "hidden";
       } else if (dy < -DRAG_THRESHOLD) {
-        // 上方向は内側スクロールに委譲
+        // 上方向は内側スクロールに任せる
         stopTracking();
       }
 
@@ -100,7 +100,7 @@ export const setupDrag = (dialog: HTMLDialogElement, inner: HTMLDivElement, cont
     dialog.style.transition = "";
 
     const dy = Math.max(0, e.clientY - dragStartY);
-    // 直近のサンプルだけで速度を出す(ドラッグを止めてから離した場合は velocity 0 扱い)
+    // 直近のサンプルだけで速度を出す(ドラッグを止めてから離した場合は velocity 0 扱いになる)
     const recent = samples.filter((s) => e.timeStamp - s.t < VELOCITY_WINDOW_MS);
     const newest = recent[recent.length - 1];
     const oldest = recent[0];
@@ -110,7 +110,7 @@ export const setupDrag = (dialog: HTMLDialogElement, inner: HTMLDivElement, cont
     if (velocity > CLOSE_VELOCITY || dy > dialog.offsetHeight * CLOSE_DISTANCE_RATIO) {
       controller.closeWithAnimation(true);
     } else {
-      // スナップバック(インラインを外して data-state="open" の位置へ戻す)
+      // スナップバック(インラインの transform を外して data-state="open" の位置へ戻す)
       dialog.style.transform = "";
       controller.setDragProgress(0);
     }

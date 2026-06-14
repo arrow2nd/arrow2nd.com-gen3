@@ -7,9 +7,9 @@ import styles from "./index.module.css";
 /**
  * 作品詳細ドロワー
  *
- * - `/` の作品リンクをクリック委譲で横取りし、pushState + fragment fetch で表示する
- * - 状態は持たず ref + 命令的DOMのみで動かす(innerHTML で挿入した内容を再レンダリングで消さないため)
- * - 閉じる操作は history.back() に集約し、popstate と双方向で同期する
+ * - `/` の作品リンクをクリック委譲で横取りして、pushState + fragment fetch で表示する
+ * - 状態は持たず ref + 命令的な DOM だけで動かす(innerHTML で挿入した内容が再レンダリングで消えてしまうため)
+ * - 閉じる操作は history.back() に集約して、popstate と双方向で同期する
  */
 export default function WorksDrawer() {
   const dialogRef = useRef<HTMLDialogElement>(null);

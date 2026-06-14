@@ -13,7 +13,7 @@ export default function Carousel({ images, alt }: Props) {
   const [paused, setPaused] = useState(false);
 
   const trackRef = useRef<HTMLDivElement>(null);
-  // hono/jsx の useRef は current が T | null になるため null 初期化
+  // hono/jsx の useRef は current が T | null になるので null で初期化する
   const scrollTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
   const autoScrollRef = useRef<ReturnType<typeof setInterval>>(null);
   const initializedRef = useRef(false);
@@ -31,7 +31,7 @@ export default function Carousel({ images, alt }: Props) {
     return el.scrollWidth / totalSlides;
   };
 
-  // DOM上のインデックス（クローン込み）でスクロール
+  // DOM 上のインデックス(クローン込み)でスクロールする
   const scrollToDom = (domIndex: number, behavior: ScrollBehavior) => {
     const el = trackRef.current;
 
@@ -42,7 +42,7 @@ export default function Carousel({ images, alt }: Props) {
     el.scrollTo({ left: domIndex * getSlideWidth(), behavior });
   };
 
-  // 論理インデックス（0〜length-1）でスクロール
+  // 論理インデックス(0〜length-1)でスクロールする
   const scrollToLogical = (index: number) => {
     scrollToDom(index + 1, "smooth");
   };
@@ -66,7 +66,7 @@ export default function Carousel({ images, alt }: Props) {
     clearInterval(autoScrollRef.current ?? undefined);
   };
 
-  // 自動スクロールと同じく現在のDOMインデックス±1へ送る。端のwrapは handleScroll が処理する
+  // 自動スクロールと同じく、今の DOM インデックス±1 へ送る。端の wrap は handleScroll が処理する
   const scrollByStep = (delta: 1 | -1) => {
     const el = trackRef.current;
     if (!el) {
@@ -82,14 +82,14 @@ export default function Carousel({ images, alt }: Props) {
     scrollToDom(domIndex + delta, "smooth");
   };
 
-  // スクロール可能になった時点で一度だけ初期位置(クローンを除いた1枚目)を適用する
+  // スクロールできるようになった時点で、一度だけ初期位置(クローンを除いた1枚目)を当てる
   const initPosition = () => {
     const el = trackRef.current;
     if (!el || initializedRef.current) {
       return;
     }
-    // 画像ロード前は scrollWidth が clientWidth 以下で scrollTo が 0 に clamp されるため、
-    // スクロール可能になってから初期位置(クローンを除いた1枚目)を適用する
+    // 画像のロード前は scrollWidth が clientWidth 以下になって scrollTo が 0 に clamp されてしまう。
+    // なのでスクロールできるようになってから、初期位置(クローンを除いた1枚目)を当てる
     if (el.scrollWidth <= el.clientWidth) {
       return;
     }
@@ -97,7 +97,7 @@ export default function Carousel({ images, alt }: Props) {
     scrollToDom(1, "instant");
   };
 
-  // 初回マウント時の初期化 + クリーンアップ
+  // 初回マウント時の初期化とクリーンアップ
   useEffect(() => {
     if (images.length <= 1) {
       return;
@@ -109,7 +109,7 @@ export default function Carousel({ images, alt }: Props) {
     return () => stopAutoScroll();
   }, []);
 
-  // スクロール停止後にクローン→本物へジャンプ + タイマーリセット
+  // スクロールが止まったらクローン → 本物へジャンプ + タイマーをリセットする
   const handleScroll = () => {
     clearTimeout(scrollTimerRef.current ?? undefined);
 
@@ -142,10 +142,10 @@ export default function Carousel({ images, alt }: Props) {
     }, 80);
   };
 
-  // クリック座標が左右25%の帯なら前後送りする。
-  // fine pointer 環境ではボタン(track の兄弟)がクリックを受けるため、クリックは track まで届かず二重発火しない。
-  // coarse 環境ではボタンが pointer-events: none で素通しになり img がターゲットになるため、クリックが track まで bubble してここで処理される。
-  // タッチでスワイプ(スクロール)が発生した場合はブラウザが click を発火しないため、誤発火もしない。
+  // クリック座標が左右 25% の帯に入っていたら前後送りする。
+  // fine pointer 環境ではボタン(track の兄弟)がクリックを受けるので、クリックは track まで届かず二重発火しない。
+  // coarse 環境ではボタンが pointer-events: none で素通しになって img がターゲットになるので、クリックが track まで bubble してここで処理される。
+  // タッチでスワイプ(スクロール)したときはブラウザが click を発火しないので、これも誤発火しない。
   const handleTrackClick = (e: MouseEvent) => {
     const el = trackRef.current;
     if (!el) {

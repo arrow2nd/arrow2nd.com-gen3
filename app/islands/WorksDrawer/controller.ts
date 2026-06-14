@@ -1,21 +1,21 @@
 export const WORK_PATH_RE = /^\/works\/([^/]+)$/;
 
-// transitionend が取りこぼされた場合の保険(ms)
+// transitionend を取りこぼした場合の保険(ms)
 const CLOSE_FALLBACK_MS = 500;
 
 type HydrateFn = (root: { querySelectorAll: Element["querySelectorAll"] }) => Promise<void>;
 
 /**
- * ドロワーの状態(isOpen / closingViaUI)と開閉処理を一元管理する。
+ * ドロワーの状態(isOpen / closingViaUI)と開閉処理をまとめて管理する。
  *
- * - 状態は生の let を外へ出さず、アクセサ/メソッド経由でのみ公開する
- * - dialog が「どう閉じられても」状態が壊れないように、後始末は close イベントに集約する
+ * - 生の let は外に出さず、アクセサ/メソッド経由でのみ公開する
+ * - dialog が「どう閉じられても」状態が壊れないよう、後始末は close イベントに集約する
  */
 export const createController = (dialog: HTMLDialogElement, inner: HTMLDivElement) => {
   const fragmentCache = new Map<string, string>();
 
   let isOpen = false;
-  // UI起点で閉じた時に history.back() 由来の popstate を無視するためのフラグ
+  // UI 起点で閉じたとき、history.back() 由来の popstate を無視するためのフラグ
   let closingViaUI = false;
 
   const setDragProgress = (progress: number) => {
@@ -49,7 +49,7 @@ export const createController = (dialog: HTMLDialogElement, inner: HTMLDivElemen
     const html = await fetchFragment(slug);
 
     if (html === null) {
-      // fragment が取れない場合はフルページへフォールバック
+      // fragment が取れなかったらフルページへフォールバックする
       location.assign(`/works/${slug}`);
       return;
     }
@@ -57,9 +57,9 @@ export const createController = (dialog: HTMLDialogElement, inner: HTMLDivElemen
     const firstOpen = !isOpen;
 
     if (firstOpen) {
-      // data-state 未設定 = CSSの「閉じ」状態(画面外)のまま表示する。
-      // 後続の await が描画機会を生むため、ここで開き状態にすると
-      // 最終位置のドロワーが数フレーム見えてチラつく
+      // data-state 未設定 = CSS の「閉じ」状態(画面外)のまま表示する。
+      // 後続の await が描画の機会を作るので、ここで開き状態にしてしまうと
+      // 最終位置のドロワーが数フレーム見えてチラついてしまう
       dialog.style.transition = "none";
       setDragProgress(1);
     }
@@ -72,15 +72,15 @@ export const createController = (dialog: HTMLDialogElement, inner: HTMLDivElemen
     inner.innerHTML = html;
     inner.scrollTop = 0;
 
-    // fragment 内の island(カルーセル等)を手動ハイドレーション
-    // showModal 後でないと display:none 中の採寸が 0 になる
-    // (translateY で画面外でもレイアウトは生きているので採寸できる)
+    // fragment 内の island(カルーセル等)を手動でハイドレーションする。
+    // showModal の後でないと、display:none 中は採寸が 0 になってしまう
+    // (translateY で画面外に出ているだけならレイアウトは生きているので採寸できる)
     const hydrate = (globalThis as Record<string, unknown>).__hydrateIslands as HydrateFn | undefined;
     await hydrate?.(inner);
 
-    // await中に閉じられた場合はここで中断する。
-    // 続行して isOpen を立てると、次回 open() が firstOpen=false 判定になり
-    // 開き状態への遷移がスキップされて画面外でスタックする
+    // await の最中に閉じられた場合は、ここで中断する。
+    // そのまま続けて isOpen を立ててしまうと、次の open() が firstOpen=false と判定して
+    // 開き状態への遷移がスキップされ、画面外でスタックしてしまう
     if (!dialog.open) {
       return;
     }
@@ -91,11 +91,11 @@ export const createController = (dialog: HTMLDialogElement, inner: HTMLDivElemen
 
     isOpen = true;
 
-    // CSSの「閉じ」状態 → 「開き」状態へ遷移(スライドイン + scale/blur 解除)
+    // CSS の「閉じ」状態 → 「開き」状態へ遷移(スライドイン + scale/blur の解除)
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        // rAF発火前にEscのネイティブclose等で閉じられた場合、閉じたdialogに
-        // data-state="open"を付けると次回open時に最終位置で表示されチラつくため中断する
+        // rAF が発火する前に Esc のネイティブ close 等で閉じられた場合、閉じた dialog に
+        // data-state="open" を付けると、次の open 時に最終位置で表示されてチラついてしまうので中断する
         if (!isOpen || !dialog.open) {
           return;
         }
@@ -124,7 +124,7 @@ export const createController = (dialog: HTMLDialogElement, inner: HTMLDivElemen
 
       finished = true;
       dialog.removeEventListener("transitionend", onTransitionEnd);
-      // 後始末は close イベントハンドラ(onDialogClose)に集約されている
+      // 後始末は close イベントハンドラ(onDialogClose)に集約してある
       dialog.close();
     };
 
@@ -137,8 +137,8 @@ export const createController = (dialog: HTMLDialogElement, inner: HTMLDivElemen
     dialog.addEventListener("transitionend", onTransitionEnd);
     setTimeout(finish, CLOSE_FALLBACK_MS);
 
-    // CSSの「閉じ」状態へ遷移。ドラッグ中ならインラインのtransformを外し、
-    // 現在位置からアニメーションさせる
+    // CSS の「閉じ」状態へ遷移する。ドラッグ中ならインラインの transform を外して、
+    // 今の位置からアニメーションさせる
     dialog.style.transition = "";
     dialog.style.transform = "";
     delete dialog.dataset.state;
@@ -150,9 +150,9 @@ export const createController = (dialog: HTMLDialogElement, inner: HTMLDivElemen
     }
   };
 
-  // dialog が「どう閉じられても」状態が壊れないように、後始末は close イベントに集約する。
-  // cancel の preventDefault は CloseWatcher 仕様により無視されることがあり
-  // (user activation の無い Esc、連続 Esc 等)、ネイティブの即時 close を完全には防げない
+  // dialog が「どう閉じられても」状態が壊れないよう、後始末は close イベントに集約する。
+  // cancel の preventDefault は CloseWatcher の仕様で無視されることがあり
+  // (user activation の無い Esc や連続 Esc など)、ネイティブの即時 close は完全には防げない
   const onDialogClose = () => {
     document.body.style.overflow = "";
     dialog.style.transform = "";
@@ -161,18 +161,18 @@ export const createController = (dialog: HTMLDialogElement, inner: HTMLDivElemen
     inner.innerHTML = "";
     isOpen = false;
 
-    // closingViaUI が立っている = closeWithAnimation が back() 発行済み(popstate 未処理)。
-    // Esc のネイティブ close では cancel → closeWithAnimation(back 1回目) → 即 close がほぼ同時に来るため、
-    // この時点では location.pathname が /works/:slug のまま(back() は非同期)。
-    // フラグを見ずに pathname だけで判定すると古い URL を見て二重に back() し2段戻ってしまう
+    // closingViaUI が立っている = closeWithAnimation が back() を発行済み(popstate はまだ未処理)。
+    // Esc のネイティブ close だと cancel → closeWithAnimation(back 1回目) → 即 close がほぼ同時に来るので、
+    // この時点では location.pathname がまだ /works/:slug のまま(back() は非同期なので)。
+    // フラグを見ずに pathname だけで判定すると、古い URL を見て二重に back() してしまい2段戻ってしまう
     if (!closingViaUI && WORK_PATH_RE.test(location.pathname)) {
-      // closeWithAnimation を経ずに閉じられた場合(開ききる前の close 含む)の履歴同期
+      // closeWithAnimation を通らずに閉じられた場合(開ききる前の close も含む)の履歴同期
       closingViaUI = true;
       history.back();
     }
   };
 
-  // --- dialog 標準の閉じ操作を横取り ---
+  // --- dialog 標準の閉じ操作を横取りする ---
 
   const onCancel = (e: Event) => {
     e.preventDefault();
@@ -180,7 +180,7 @@ export const createController = (dialog: HTMLDialogElement, inner: HTMLDivElemen
   };
 
   const onDialogClick = (e: MouseEvent) => {
-    // 子要素ではなく dialog 自体がターゲット = backdrop クリック
+    // 子要素ではなく dialog 自体がターゲット = backdrop のクリック
     if (e.target === dialog) {
       closeWithAnimation(true);
     }
@@ -204,7 +204,7 @@ export const createController = (dialog: HTMLDialogElement, inner: HTMLDivElemen
     setDragProgress,
     setupDialog,
     isOpen: () => isOpen,
-    // popstate 側が UI 起点の back() 由来かを判定するためのアクセサ
+    // popstate 側で、UI 起点の back() 由来かどうかを判定するためのアクセサ
     isClosingViaUI: () => closingViaUI,
     consumeClosingViaUI: () => {
       closingViaUI = false;
