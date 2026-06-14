@@ -1,16 +1,26 @@
 /* breakpoint: md=768px / lg=1024px — `@media (width >= 768px)` 等の range 構文で統一する。詳細は docs/adr/0009 */
 
 :root {
-  /* next/font の variable の置き換え */
   --font-poppins: "Poppins", sans-serif;
 
-  --color-text: #8a6864;
-  --color-text-sub: #cebfbf;
-  --color-text-head: #673838;
-  --color-bg: #fffefe;
-  --color-button-bg: #673838;
-  --color-border: #cebfbf;
-  --color-border-emphasis: #673838;
+  --color-base: oklch(40% 0.067 21);
+
+  /* ベースから明度別のスケールを生成(Tailwind 風: 数値が小さいほど淡い)。
+     彩度はベース彩度 c から自動算出し、明度が上がるほど淡くなるよう
+     c × (100 - 目標明度) / (100 - ベース明度40) でスケールさせる。
+     色相 h はベースから継承するため、全段が常に同一色相で揃う */
+  --color-50: oklch(from var(--color-base) 99.8% calc(c * (100 - 99.8) / 60) h);
+  --color-200: oklch(from var(--color-base) 82% calc(c * (100 - 82) / 60) h);
+  --color-500: oklch(from var(--color-base) 55% calc(c * (100 - 55) / 60) h);
+  --color-700: oklch(from var(--color-base) 40% calc(c * (100 - 40) / 60) h);
+
+  --color-text-head: var(--color-700);
+  --color-text: var(--color-500);
+  --color-text-sub: var(--color-200);
+  --color-bg: var(--color-50);
+  --color-button-bg: var(--color-700);
+  --color-border: var(--color-200);
+  --color-border-emphasis: var(--color-700);
 }
 
 body {
