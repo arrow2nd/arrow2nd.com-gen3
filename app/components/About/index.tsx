@@ -21,14 +21,14 @@ export default function About() {
 
         <div class={styles.section}>
           <DashedHeading as="h3">よく使う技術</DashedHeading>
-          <p class={styles.text}>JavaScript / TypeScript / Golang / React / Next.js / GitHub Actions / Playwright</p>
+          <p class={styles.text}>TypeScript / Golang / React / Next.js / GitHub Actions / Playwright</p>
         </div>
 
         <div class={styles.section}>
           <DashedHeading as="h3">やりたいこと</DashedHeading>
           <ul class={styles.list}>
             <li>
-              <BudouX>触り心地のいいUIを考え実装すること</BudouX>
+              <BudouX>触り心地を重視したWebサイト・アプリをつくること</BudouX>
             </li>
             <li>
               <BudouX>インターネットカルチャーと技術が交わるところで何かつくること</BudouX>
