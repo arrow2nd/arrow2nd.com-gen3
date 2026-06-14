@@ -1,5 +1,7 @@
 # arrow2nd.com (gen 3)
 
+🐟️ ポートフォリオサイト
+
 HonoX + hono/jsx + CSS Modules + SSG (Cloudflare Workers Assets)
 
 ## Getting Started
