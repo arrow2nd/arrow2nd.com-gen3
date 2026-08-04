@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "budoux": "^0.8.4",
-    "hono": "^4.12.25",
+    "hono": "^4.12.34",
     "honox": "^0.1.56"
   },
   "devDependencies": {
