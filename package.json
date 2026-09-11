@@ -25,7 +25,7 @@
     "@types/node": "^20",
     "remark-frontmatter": "^5.0.0",
     "remark-mdx-frontmatter": "^5.2.0",
-    "sharp": "^0.35.1",
+    "sharp": "^0.35.4",
     "typescript": "^5",
     "vite": "^6",
     "wrangler": "^4"
