@@ -18,12 +18,4 @@ const cssModules = import.meta.glob("./**/*.module.css", { eager: true });
 // HACK: Vite は CSS Modules の export が未使用だと CSS ごと tree-shake してしまうので、参照だけ残しておく
 (globalThis as Record<string, unknown>).__cssModules = cssModules;
 
-createClient({
-  triggerHydration: async (hydrate) => {
-    // HACK:
-    // fragment を動的挿入するドロワーから島を再ハイドレーションできるよう退避しておく。
-    // (<honox-island> は customElement ではないので、挿入しても自動ではハイドレーションされない)
-    (globalThis as Record<string, unknown>).__hydrateIslands = hydrate;
-    await hydrate(document);
-  },
-});
+createClient();

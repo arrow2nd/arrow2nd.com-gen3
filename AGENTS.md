@@ -5,7 +5,7 @@ HonoX + hono/jsx + CSS Modules + SSG。Cloudflare Workers の static assets と�
 技術選定の経緯と根拠は [docs/adr/](./docs/adr/README.md) を参照。構成を変更する前に必ず該当 ADR を読むこと。
 
 - React は使っていない。JSX は `hono/jsx`(サーバー) / `hono/jsx/dom`(islands)。React 専用ライブラリは動かない
-- ページは `/`(ペライチ)と `/works/:slug`(作品詳細)のみ。`/works/:slug/fragment` はドロワー用の部分HTML
+- ページは `/`(ペライチ)と `/works/:slug`(作品詳細)のみ。作品詳細は通常のページ遷移で表示する
 - 作品データは `app/data/works/<category>/<slug>/index.mdx`(元画像PNGも同ディレクトリ)。frontmatter(title/images/link/createdAt)は remark-mdx-frontmatter でビルド時に展開され、`app/lib/works.ts` の `import.meta.glob` で集約される
 
 ## CSS Modules の配線(壊さないこと)
@@ -26,5 +26,3 @@ Vite/honox の制約を回避するための3点セット。どれか欠ける�
 
 - **ファイル編集が dev サーバーに反映されないことがある**(mdx に限らず tsx/css でも発生)。OSレベルの inotify イベントは正常に発火しているが、vite の moduleGraph が invalidate されないケースを複数回観測した(原因未特定)。「修正したのに変わらない」と感じたら、まず**サーバー再起動 + ブラウザのハードリロード**で切り分けること。本番ビルドでは起きない
 - islands を追加した直後にハイドレーションされない場合、ブラウザが `node_modules/.vite/deps/honox_client.js` を immutable キャッシュしている → ハードリロード(キャッシュ無視)で解消
-- ドロワー(app/islands/works-drawer.tsx)は useState を使わず ref + 命令的DOMで書く。innerHTML で挿入した fragment が再レンダリングで消えるため
-- ドロワーの動作検証は dev の HMR を信用せず、`pnpm build && pnpm preview`(wrangler dev)で行うのが確実

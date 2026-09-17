@@ -6,7 +6,7 @@ import { toSSG } from "hono/ssg";
 const SITE_URL = "https://arrow2nd.com/";
 const OUTPUT_DIR = "./dist";
 
-// fragment はドロワーに差し込む部分HTML、404 はクローラに辿らせる必要がないので除外
+// 404 は検索結果に出さないためサイトマップから除外
 const sitemapPlugin = {
   afterGenerateHook: async (result, fsModule, options) => {
     if (!result.files) {
@@ -17,8 +17,7 @@ const sitemapPlugin = {
     const urls = result.files
       .map((file) => path.relative(outputDir, file).replaceAll(path.sep, "/"))
       .filter((rel) => rel.endsWith(".html"))
-      // 404 は検索結果に出したくない、fragment はドロワーに差し込む部分HTMLでクローラに辿らせる必要なし
-      .filter((rel) => rel !== "404.html" && !rel.endsWith("/fragment.html"))
+      .filter((rel) => rel !== "404.html")
       // 拡張子なし URL でサイトを運用しているので canonical に合わせる(index.html → "")
       .map((rel) => rel.replace(/(?:^|\/)index\.html$/, "/").replace(/\.html$/, ""))
       .map((rel) => new URL(rel, SITE_URL).toString())
