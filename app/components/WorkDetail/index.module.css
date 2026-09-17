@@ -12,13 +12,13 @@
   min-width: 0;
   align-self: center;
 
-  @media (width >= 1024px) {
+  @media (width >= 768px) {
     align-self: start;
   }
 }
 
 .carousel {
-  @media (width >= 1024px) {
+  @media (width >= 768px) {
     display: none;
   }
 }
@@ -26,7 +26,7 @@
 .images {
   display: none;
 
-  @media (width >= 1024px) {
+  @media (width >= 768px) {
     display: grid;
     gap: 1.5rem;
   }
