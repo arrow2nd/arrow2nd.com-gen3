@@ -205,14 +205,17 @@ export default function Carousel({ images, alt }: Props) {
         <button type="button" class={styles.tapNext} aria-label="次の画像" onClick={() => scrollByStep(1)} />
       </div>
       <div class={styles.indicators}>
-        {images.map((_, i) => (
+        {images.map((src, i) => (
           <button
             key={i.toString()}
             type="button"
             class={i === activeIndex ? styles.indicatorActive : styles.indicator}
             aria-label={`${i + 1}枚目の画像`}
+            aria-current={i === activeIndex ? "true" : undefined}
             onClick={() => scrollToLogical(i)}
-          />
+          >
+            <img src={src} alt="" />
+          </button>
         ))}
       </div>
     </div>
