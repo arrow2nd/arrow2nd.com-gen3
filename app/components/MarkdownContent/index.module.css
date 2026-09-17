@@ -27,8 +27,4 @@
   transition:
     color 0.15s ease,
     scale 0.15s var(--ease-back);
-
-  &:hover {
-    color: var(--color-text-sub);
-  }
 }
