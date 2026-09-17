@@ -24,7 +24,9 @@
 .link {
   color: var(--color-text-head);
   text-decoration: underline;
-  transition: color 0.15s ease;
+  transition:
+    color 0.15s ease,
+    scale 0.15s var(--ease-back);
 
   &:hover {
     color: var(--color-text-sub);

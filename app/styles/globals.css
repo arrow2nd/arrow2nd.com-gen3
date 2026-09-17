@@ -41,3 +41,23 @@ body {
 .inline-block {
   display: inline-block;
 }
+
+:where(a, button) {
+  transition: scale 0.15s var(--ease-back);
+}
+
+:where(a) {
+  display: inline-block;
+}
+
+@media (hover: hover) {
+  :where(a, button):hover {
+    scale: 1.05;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(a, button)[class] {
+    transition-duration: 0s;
+  }
+}

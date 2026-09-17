@@ -75,7 +75,9 @@
   border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
-  transition: border-color 0.2s;
+  transition:
+    border-color 0.2s,
+    scale 0.15s var(--ease-back);
   border-color: var(--color-border);
 
   img {

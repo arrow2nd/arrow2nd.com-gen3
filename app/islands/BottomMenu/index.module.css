@@ -210,7 +210,9 @@
   text-align: left;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    scale 0.15s var(--ease-back);
 
   &:hover {
     /* テーマ色を透明度だけ落として薄く敷く。明度等は color-base から実行時に解決される */
