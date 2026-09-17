@@ -13,7 +13,7 @@
 }
 
 .category {
-  font-family: var(--font-poppins);
+  font-family: var(--font-latin);
   width: fit-content;
   color: var(--color-bg);
   background-color: var(--color-text);

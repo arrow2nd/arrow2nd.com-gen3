@@ -21,7 +21,7 @@ Next.js 版は `next/font/google` で IBM Plex Sans JP (400/500/600) と Poppins
 
 - @fontsource の日本語フォントは Google Fonts 同様 `unicode-range` で分割済みの woff2 を宣言するだけなので、**手動サブセット作業が不要**でブラウザが必要チャンクのみ取得する。next/font とほぼ等価の挙動
 - `font-display: swap` がデフォルト
-- 旧 `--font-poppins` 変数は `globals.css` で `"Poppins", sans-serif` として定義し直した
+- 英字フォントは `globals.css` の `--font-latin` で指定する。2026-09-17 に Reddit Sans を試用後、Poppins (500) に戻した
 
 ## 結果・トレードオフ
 

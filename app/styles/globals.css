@@ -1,7 +1,7 @@
 /* breakpoint: md=768px / lg=1024px — `@media (width >= 768px)` 等の range 構文で統一する。詳細は docs/adr/0009 */
 
 :root {
-  --font-poppins: "Poppins", sans-serif;
+  --font-latin: "Poppins", sans-serif;
 
   --color-base: oklch(40% 0.067 21);
 

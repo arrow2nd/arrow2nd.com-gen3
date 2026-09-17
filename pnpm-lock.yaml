@@ -26,7 +26,7 @@ importers:
         version: 5.2.8
       '@fontsource/poppins':
         specifier: ^5.2.7
-        version: 5.2.7
+        version: 5.3.0
       '@hono/vite-build':
         specifier: ^1.11.1
         version: 1.11.1(hono@4.12.25)
@@ -532,8 +532,8 @@ packages:
   '@fontsource/ibm-plex-sans-jp@5.2.8':
     resolution: {integrity: sha512-ULgJLBVJEBIKBddVFla4PiOCHM4a7wjThS9FtMbmc9YehcYmnuMtF8/mi9ItZobHpQGwChzF/7ujoUTs+cYbZw==}
 
-  '@fontsource/poppins@5.2.7':
-    resolution: {integrity: sha512-6uQyPmseo4FgI97WIhA4yWRlNaoLk4vSDK/PyRwdqqZb5zAEuc+Kunt8JTMcsHYUEGYBtN15SNkMajMdqUSUmg==}
+  '@fontsource/poppins@5.3.0':
+    resolution: {integrity: sha512-cms1nM7U6SN8epIV1WMVOV8VsA645aSm3wHfzIQnkk188U341ThbJGSl2Sv54V29gnDbT2arMPfLzvVIIVCceQ==}
 
   '@hono/node-server@1.19.14':
     resolution: {integrity: sha512-GwtvgtXxnWsucXvbQXkRgqksiH2Qed37H9xHZocE5sA3N8O8O8/8FA3uclQXxXVzc9XBZuEOMK7+r02FmSpHtw==}
@@ -2399,7 +2399,7 @@ snapshots:
 
   '@fontsource/ibm-plex-sans-jp@5.2.8': {}
 
-  '@fontsource/poppins@5.2.7': {}
+  '@fontsource/poppins@5.3.0': {}
 
   '@hono/node-server@1.19.14(hono@4.12.25)':
     dependencies:
