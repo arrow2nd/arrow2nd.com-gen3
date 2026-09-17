@@ -73,6 +73,11 @@
 
 .description {
   margin-top: 4rem;
+  z-index: 1;
+
+  span {
+    background-color: var(--color-bg);
+  }
 }
 
 .hobby {
