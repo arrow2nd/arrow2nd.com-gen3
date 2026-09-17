@@ -1,14 +1,25 @@
 .root {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  position: relative;
   color: var(--color-text-head);
   font-weight: 500;
 
   &::after {
     content: "";
-    flex: 1;
+    position: absolute;
+    inset: 50% 0 auto;
     border-bottom: 1px dashed var(--color-border);
+  }
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  padding-right: 1rem;
+  background: var(--color-bg);
+
+  svg {
+    display: inline-block;
+    vertical-align: middle;
   }
 }
 

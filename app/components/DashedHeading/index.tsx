@@ -9,5 +9,9 @@ type Props = PropsWithChildren<{
 }>;
 
 export default function DashedHeading({ as: Tag = "h2", lang = "ja", children }: Props) {
-  return <Tag class={`${styles.root} ${styles[lang]}`}>{children}</Tag>;
+  return (
+    <Tag class={`${styles.root} ${styles[lang]}`}>
+      <span class={styles.content}>{children}</span>
+    </Tag>
+  );
 }
