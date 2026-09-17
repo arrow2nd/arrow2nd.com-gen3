@@ -17,6 +17,8 @@ export default function Carousel({ images, alt }: Props) {
   const scrollTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
   const autoScrollRef = useRef<ReturnType<typeof setInterval>>(null);
   const initializedRef = useRef(false);
+  const activeIndexRef = useRef(0);
+  activeIndexRef.current = activeIndex;
 
   // クローン込みのスライド: [last, ...images, first]
   const totalSlides = images.length + 2;
@@ -56,6 +58,9 @@ export default function Carousel({ images, alt }: Props) {
       }
 
       const slideWidth = getSlideWidth();
+      if (slideWidth === 0) {
+        return;
+      }
       const domIndex = Math.round(el.scrollLeft / slideWidth);
 
       scrollToDom(domIndex + 1, "smooth");
@@ -106,7 +111,30 @@ export default function Carousel({ images, alt }: Props) {
     initPosition();
     startAutoScroll();
 
-    return () => stopAutoScroll();
+    let previousWidth = 0;
+    const observer = new ResizeObserver(([entry]) => {
+      const width = entry.contentRect.width;
+      if (width === previousWidth) {
+        return;
+      }
+      previousWidth = width;
+      if (width === 0) {
+        return;
+      }
+      // PC では非表示のため、SP 表示への切り替え時にも選択中の画像へ位置を合わせる
+      clearTimeout(scrollTimerRef.current ?? undefined);
+      initializedRef.current = true;
+      scrollToDom((activeIndexRef.current ?? 0) + 1, "instant");
+    });
+    if (trackRef.current) {
+      observer.observe(trackRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(scrollTimerRef.current ?? undefined);
+      stopAutoScroll();
+    };
   }, []);
 
   // スクロールが止まったらクローン → 本物へジャンプ + タイマーをリセットする

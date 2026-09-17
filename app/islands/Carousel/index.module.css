@@ -13,7 +13,7 @@
   display: flex;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  touch-action: pan-x;
+  touch-action: manipulation;
   scrollbar-width: none;
 }
 
@@ -38,7 +38,7 @@
   background: none;
   cursor: pointer;
   /* タッチ時はネイティブの横スワイプを阻害せず、タップのディレイだけ抑制する */
-  touch-action: pan-x;
+  touch-action: manipulation;
 }
 
 @media (pointer: coarse) {
