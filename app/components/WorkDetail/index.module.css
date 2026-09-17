@@ -42,7 +42,7 @@
   min-width: 0;
   overflow-wrap: anywhere;
   margin-top: 1.5rem;
-  padding: 0 1rem 1.5rem;
+  padding: 0 1.5rem 1.5rem;
 
   @media (width >= 768px) {
     margin-top: 0;
