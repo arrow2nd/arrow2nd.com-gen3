@@ -1,5 +1,15 @@
 /* breakpoint: md=768px / lg=1024px — `@media (width >= 768px)` 等の range 構文で統一する。詳細は docs/adr/0009 */
 
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: 0.25s;
+  animation-timing-function: ease-in-out;
+}
+
 :root {
   --font-latin: "Poppins", sans-serif;
 
@@ -57,6 +67,10 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+
   :is(a, button)[class] {
     transition-duration: 0s;
   }
