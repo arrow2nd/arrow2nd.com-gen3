@@ -2,15 +2,12 @@ import { useEffect, useRef, useState } from "hono/jsx";
 import { CATEGORY_ORDER } from "../../lib/categories";
 import {
   AboutIcon,
+  CATEGORY_ICONS,
   ContactIcon,
-  GameIcon,
   GitHubIcon,
   HomeIcon,
   MailIcon,
   PhotoIcon,
-  StickerIcon,
-  ToolIcon,
-  WebIcon,
   WorksIcon,
   XIcon,
 } from "./icons";
@@ -65,13 +62,6 @@ const CONTACT_LINKS = [
     Icon: MailIcon,
   },
 ] as const;
-
-const CATEGORY_ICONS = {
-  web: WebIcon,
-  tool: ToolIcon,
-  game: GameIcon,
-  sticker: StickerIcon,
-} as const;
 
 const NAV_ICONS = {
   home: HomeIcon,

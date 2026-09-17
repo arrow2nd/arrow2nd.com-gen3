@@ -1,3 +1,4 @@
+import { CATEGORY_ICONS } from "../../islands/BottomMenu/icons";
 import { getAllWorksByCategory } from "../../lib/works";
 import DashedHeading from "../DashedHeading";
 import Card from "./Card";
@@ -11,24 +12,29 @@ export default function Works() {
       <h2 class={styles.heading}>works</h2>
 
       {/* Card の id={slug} と衝突しないよう、works- プレフィックスを付けておく */}
-      {Array.from(worksByCategory.entries()).map(([category, works]) => (
-        <div key={category} id={`works-${category}`} class={styles.section}>
-          <DashedHeading as="h3" lang="en">
-            {category}
-          </DashedHeading>
-          <div class={styles.cards}>
-            {works.map((work) => (
-              <Card
-                key={work.slug}
-                slug={work.slug}
-                title={work.title}
-                shortDescription={work.shortDescription}
-                thumbnail={work.images[0]}
-              />
-            ))}
+      {Array.from(worksByCategory.entries()).map(([category, works]) => {
+        const CategoryIcon = CATEGORY_ICONS[category];
+
+        return (
+          <div key={category} id={`works-${category}`} class={styles.section}>
+            <DashedHeading as="h3" lang="en">
+              <CategoryIcon class={styles.categoryIcon} />
+              <span class={styles.categoryLabel}>{category}</span>
+            </DashedHeading>
+            <div class={styles.cards}>
+              {works.map((work) => (
+                <Card
+                  key={work.slug}
+                  slug={work.slug}
+                  title={work.title}
+                  shortDescription={work.shortDescription}
+                  thumbnail={work.images[0]}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </section>
   );
 }

@@ -109,6 +109,13 @@ export function StickerIcon(props: Props) {
   );
 }
 
+export const CATEGORY_ICONS = {
+  web: WebIcon,
+  tool: ToolIcon,
+  game: GameIcon,
+  sticker: StickerIcon,
+} as const;
+
 // --- 連絡先 ---
 
 // brand-x
