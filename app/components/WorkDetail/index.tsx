@@ -7,16 +7,29 @@ type Props = {
   work: Work;
 };
 
-// 作品詳細の中身。フルページ(/works/:slug)とドロワー(fragment)で使い回す
 export default function WorkDetail({ work }: Props) {
   return (
-    <>
-      <Carousel images={work.images} alt={work.title} />
+    <main class={styles.root}>
+      <div class={styles.gallery}>
+        <div class={styles.carousel}>
+          <Carousel images={work.images} alt={work.title} />
+        </div>
+        <div class={styles.images}>
+          {work.images.map((src, i) => (
+            <img
+              key={src}
+              src={src}
+              alt={`${work.title} (${i + 1}/${work.images.length})`}
+              loading={i === 0 ? "eager" : "lazy"}
+            />
+          ))}
+        </div>
+      </div>
       <div class={styles.container}>
         <h1 class={styles.title}>{work.title}</h1>
         <p class={styles.category}>#{work.category}</p>
         <MarkdownContent Content={work.Content} />
       </div>
-    </>
+    </main>
   );
 }

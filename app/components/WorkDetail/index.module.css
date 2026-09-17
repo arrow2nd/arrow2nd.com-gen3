@@ -1,9 +1,52 @@
+.root {
+  @media (width >= 768px) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 3rem;
+    padding: 0 4rem;
+  }
+}
+
+.gallery {
+  min-width: 0;
+  align-self: center;
+
+  @media (width >= 1024px) {
+    align-self: start;
+  }
+}
+
+.carousel {
+  @media (width >= 1024px) {
+    display: none;
+  }
+}
+
+.images {
+  display: none;
+
+  @media (width >= 1024px) {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  img {
+    width: 100%;
+    border: 2px solid var(--color-border);
+    border-radius: 4px;
+  }
+}
+
 .container {
+  min-width: 0;
+  overflow-wrap: anywhere;
   margin-top: 1.5rem;
   padding: 0 1rem 1.5rem;
 
   @media (width >= 768px) {
-    padding: 0 3rem 1.5rem;
+    margin-top: 0;
+    padding: 0 0 1.5rem;
   }
 }
 
