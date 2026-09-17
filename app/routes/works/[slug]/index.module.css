@@ -9,7 +9,11 @@
 }
 
 .header {
-  margin: 3.5rem 4rem 3rem;
+  margin: 1.5rem 1rem;
+
+  @media (width >= 768px) {
+    margin: 3.5rem 4rem 3rem;
+  }
 }
 
 .backButton {
