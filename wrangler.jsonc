@@ -3,6 +3,7 @@
   "name": "arrow2nd-com-gen3",
   "compatibility_date": "2026-05-01",
   "main": "worker/index.ts",
+  "vars": { "PNPM_VERSION": "12.4.2" },
   "secrets": { "required": ["PORTFOLIO_MCP_TOKEN"] },
   "kv_namespaces": [{ "binding": "PORTFOLIO_STATE" }],
   "observability": { "enabled": true, "traces": { "enabled": true } },
