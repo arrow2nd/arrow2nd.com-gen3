@@ -18,4 +18,16 @@ const cssModules = import.meta.glob("./**/*.module.css", { eager: true });
 // HACK: Vite は CSS Modules の export が未使用だと CSS ごと tree-shake してしまうので、参照だけ残しておく
 (globalThis as Record<string, unknown>).__cssModules = cssModules;
 
+if (import.meta.env.PROD) {
+  // 初期配色で描画する機会を設け、配色の通信で本文表示を待たせない。
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const theme = document.createElement("link");
+      theme.rel = "stylesheet";
+      theme.href = "/theme.css";
+      document.head.append(theme);
+    });
+  });
+}
+
 createClient();
