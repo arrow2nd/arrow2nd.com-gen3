@@ -30,12 +30,12 @@
     "@fontsource/poppins": "^5.2.7",
     "@hono/vite-build": "^1.11.1",
     "@mdx-js/rollup": "^3.1.1",
-    "@types/node": "^22.20.3",
+    "@types/node": "^26.6.1",
     "remark-frontmatter": "^5.0.0",
     "remark-mdx-frontmatter": "^5.2.0",
     "sharp": "^0.35.4",
     "typescript": "^7.0.2",
     "vite": "^8.3.0",
-    "wrangler": "^4.134.0"
+    "wrangler": "^4.135.0"
   }
 }
