@@ -91,7 +91,7 @@
   /* active な扇ボタンは色反転 */
   &[data-active] {
     background: var(--color-button-bg);
-    border-color: var(--color-button-bg);
+    border-color: var(--color-bg);
     color: var(--color-bg);
   }
 }
