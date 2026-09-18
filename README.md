@@ -28,7 +28,7 @@ pnpm deploy   # Cloudflare Workers (static assets + 配色MCP) へデプロイ
 # ローカルWorkerの認証・配色変更・キャッシュ
 PORTFOLIO_TEST_URL=http://localhost:8787 pnpm test
 
-# ビルド済みサイトの配色CSSの遅延・失敗・トランジション
+# ビルド済みサイトの配色JSONの遅延・保存・不正入力・トランジション
 THEME_UI_TEST=1 node --test tests/theme-ui.test.mjs
 ```
 

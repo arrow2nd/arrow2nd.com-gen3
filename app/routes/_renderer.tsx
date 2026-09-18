@@ -1,6 +1,8 @@
+import { raw } from "hono/html";
 import type { Child } from "hono/jsx";
 import { jsxRenderer } from "hono/jsx-renderer";
 import { Script } from "honox/server";
+import { parseThemeInput } from "../../shared/theme-input";
 import AppCss from "../components/AppCss";
 import Footer from "../components/Footer";
 import BottomMenu from "../islands/BottomMenu";
@@ -55,6 +57,17 @@ export default jsxRenderer((props, c) => {
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={ogImageUrl} />
         <JsonLdScript data={jsonLdGraph} />
+        {import.meta.env.PROD && (
+          // 初期色からの遷移を防ぐため、保存色をスタイルシートの読み込み前に適用する。
+          <script>
+            {raw(`try {
+              const theme = (${parseThemeInput.toString()})(JSON.parse(localStorage.getItem("theme")));
+              if (theme) {
+                document.documentElement.style.setProperty("--color-base", "oklch(40% " + theme.chroma + " " + theme.hue + ")");
+              }
+            } catch {}`)}
+          </script>
+        )}
         <AppCss />
         <Script src="/app/client.ts" async />
       </head>

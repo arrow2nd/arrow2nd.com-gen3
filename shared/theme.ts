@@ -68,7 +68,3 @@ export function parseStoredTheme(input: unknown): Theme {
   validateTheme({ hue: theme.hue, chroma: theme.chroma });
   return theme;
 }
-
-export function themeCss(theme: Theme) {
-  return `:root { --color-base: oklch(40% ${theme.chroma} ${theme.hue}); }\n`;
-}

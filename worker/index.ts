@@ -1,14 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { z } from "zod";
-import {
-  DEFAULT_THEME,
-  parseStoredTheme,
-  themeCss,
-  themeInputSchema,
-  themeSchema,
-  validateTheme,
-} from "../shared/theme";
+import { DEFAULT_THEME, parseStoredTheme, themeInputSchema, themeSchema, validateTheme } from "../shared/theme";
 
 async function readTheme(env: Env) {
   const stored = await env.PORTFOLIO_STATE.get("theme", "json");
@@ -25,13 +18,13 @@ export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
 
-    if (url.pathname === "/theme.css") {
+    if (url.pathname === "/theme.json") {
       if (request.method !== "GET" && request.method !== "HEAD") {
         return new Response(null, { status: 405 });
       }
 
       // 全閲覧者で同じ配色を使うため、クエリやリクエストヘッダーでキャッシュを分けない。
-      const cacheKey = new Request(`${url.origin}/theme.css`);
+      const cacheKey = new Request(`${url.origin}/theme.json`);
 
       try {
         const cached = await caches.default.match(cacheKey);
@@ -43,29 +36,27 @@ export default {
         console.error(JSON.stringify({ event: "theme_cache_read_failed" }));
       }
 
-      let theme = DEFAULT_THEME;
-      let cacheControl = "public, max-age=60, s-maxage=300";
+      let theme: z.infer<typeof themeSchema>;
+      const cacheControl = "public, max-age=60, s-maxage=300";
 
       try {
         theme = await readTheme(env);
       } catch {
         // 障害時の初期配色を保存すると、復旧後も本来の配色に戻らないため。
-        cacheControl = "no-store";
-        console.error(JSON.stringify({ event: "theme_fallback" }));
+        console.error(JSON.stringify({ event: "theme_read_failed" }));
+        return new Response(null, { status: 503, headers: { "Cache-Control": "no-store" } });
       }
 
-      // HEADでも完全なCSSを保存し、後続のGETへ空の本文を返さない。
-      const response = new Response(themeCss(theme), {
-        headers: { "Content-Type": "text/css; charset=utf-8", "Cache-Control": cacheControl },
+      // HEADでも完全なJSONを保存し、後続のGETへ空の本文を返さない。
+      const response = new Response(JSON.stringify({ hue: theme.hue, chroma: theme.chroma }), {
+        headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": cacheControl },
       });
 
-      if (cacheControl !== "no-store") {
-        ctx.waitUntil(
-          caches.default.put(cacheKey, response.clone()).catch(() => {
-            console.error(JSON.stringify({ event: "theme_cache_write_failed" }));
-          }),
-        );
-      }
+      ctx.waitUntil(
+        caches.default.put(cacheKey, response.clone()).catch(() => {
+          console.error(JSON.stringify({ event: "theme_cache_write_failed" }));
+        }),
+      );
 
       return request.method === "HEAD" ? new Response(null, response) : response;
     }

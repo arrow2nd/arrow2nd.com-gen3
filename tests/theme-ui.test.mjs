@@ -9,14 +9,15 @@ import { promisify } from "node:util";
 const run = promisify(execFile);
 const dist = path.resolve("dist");
 
-test("配色CSSの遅延・失敗・色の補間・動きを減らす設定", { skip: !process.env.THEME_UI_TEST }, async () => {
+test("配色JSONの遅延・保存・失敗・色の補間・動きを減らす設定", { skip: !process.env.THEME_UI_TEST }, async () => {
   let fail = false;
+  let hue = 240;
   const server = createServer(async (request, response) => {
     const pathname = new URL(request.url, "http://localhost").pathname;
-    if (pathname === "/theme.css") {
+    if (pathname === "/theme.json") {
       setTimeout(() => {
-        response.writeHead(fail ? 503 : 200, { "Content-Type": "text/css", "Cache-Control": "no-store" });
-        response.end(fail ? "" : ":root { --color-base: oklch(40% 0.05 240); }");
+        response.writeHead(fail ? 503 : 200, { "Content-Type": "application/json", "Cache-Control": "no-store" });
+        response.end(fail ? "" : JSON.stringify({ hue, chroma: 0.05 }));
       }, 1000);
       return;
     }
@@ -70,19 +71,41 @@ test("配色CSSの遅延・失敗・色の補間・動きを減らす設定", { 
     const observed = await evaluate(`({
       colors: [...new Set(window.themeSamples)].filter(Boolean),
       paint: performance.getEntriesByName('first-contentful-paint')[0].startTime,
-      css: performance.getEntriesByType('resource').find(entry => entry.name.endsWith('/theme.css')).responseEnd
+      responseEnd: performance.getEntriesByType('resource').find(entry => entry.name.endsWith('/theme.json')).responseEnd
     })`);
-    assert.ok(observed.paint < observed.css, "配色CSSの取得完了前に本文を描画する");
+    assert.ok(observed.paint < observed.responseEnd, "配色JSONの取得完了前に本文を描画する");
     assert.ok(observed.colors.includes("oklch(0.4 0.067 21)"));
     assert.ok(observed.colors.length > 2, "途中色を補間する");
+    hue = 120;
+    await browser("open", `${url}works/ruru-ai.html`);
+    await browser("wait", "--fn", 'JSON.parse(localStorage.getItem("theme"))?.hue === 120');
+    assert.deepEqual(await evaluate("[...new Set(window.themeSamples)].filter(Boolean)"), ["oklch(0.4 0.05 240)"]);
+    hue = "21); color: red; </script><script>window.injected = true</script>";
+    await browser("open", `${url}?invalid-response`);
+    await browser("wait", "1500");
+    assert.equal(await evaluate('JSON.parse(localStorage.getItem("theme")).hue'), 120);
+    assert.deepEqual(await evaluate("[...new Set(window.themeSamples)].filter(Boolean)"), ["oklch(0.4 0.05 120)"]);
+    assert.equal(await evaluate("Boolean(window.injected)"), false);
+    await evaluate(`localStorage.setItem("theme", JSON.stringify({ hue: ${JSON.stringify(hue)}, chroma: 0.05 }))`);
+    await browser("open", `${url}?invalid-storage`);
+    await browser("wait", "1500");
+    assert.deepEqual(await evaluate("[...new Set(window.themeSamples)].filter(Boolean)"), ["oklch(0.4 0.067 21)"]);
+    assert.equal(await evaluate("Boolean(window.injected)"), false);
+    await evaluate('localStorage.setItem("theme", JSON.stringify({ hue: 120, chroma: 0.05 }))');
     fail = true;
+    await browser("open", `${url}?cached-failure`);
+    await browser("wait", "1500");
+    assert.deepEqual(await evaluate("[...new Set(window.themeSamples)].filter(Boolean)"), ["oklch(0.4 0.05 120)"]);
+    await evaluate('localStorage.setItem("theme", "invalid-color")');
     await browser("open", `${url}?failure`);
-    await browser("wait", "1000");
+    await browser("wait", "1500");
     assert.equal(
       await evaluate('getComputedStyle(document.documentElement).getPropertyValue("--color-base").trim()'),
       "oklch(0.4 0.067 21)",
     );
     fail = false;
+    hue = 240;
+    await evaluate('localStorage.removeItem("theme")');
     await browser("set", "media", "light", "reduced-motion");
     await browser("open", `${url}?reduced`);
     await browser(

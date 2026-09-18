@@ -6,7 +6,7 @@ import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/
 
 const base = process.env.PORTFOLIO_TEST_URL;
 
-test("ローカルWorkerの認証・配色変更・不正入力拒否・CSSと静的配信", { skip: !base }, async () => {
+test("ローカルWorkerの認証・配色変更・不正入力拒否・JSONと静的配信", { skip: !base }, async () => {
   const url = new URL(base);
   assert.ok(["localhost", "127.0.0.1"].includes(url.hostname), "本番へのテスト書き込みは禁止");
   const vars = await fs.readFile(new URL("../.dev.vars", import.meta.url), "utf8");
@@ -54,16 +54,17 @@ test("ローカルWorkerの認証・配色変更・不正入力拒否・CSSと�
     }
     const current = await client.callTool({ name: "get_theme", arguments: {} });
     assert.equal(current.structuredContent.hue, 240);
-    const css = await fetch(`${base}/theme.css`);
-    assert.equal(css.headers.get("Cache-Control"), "public, max-age=60, s-maxage=300");
-    assert.match(await css.text(), /oklch\(40% 0\.05 240\)/);
-    const head = await fetch(`${base}/theme.css`, { method: "HEAD" });
+    const theme = await fetch(`${base}/theme.json`);
+    assert.equal(theme.headers.get("Cache-Control"), "public, max-age=60, s-maxage=300");
+    assert.equal(theme.headers.get("Content-Type"), "application/json; charset=utf-8");
+    assert.deepEqual(await theme.json(), { hue: 240, chroma: 0.05 });
+    const head = await fetch(`${base}/theme.json`, { method: "HEAD" });
     assert.equal(await head.text(), "");
     assert.equal(head.headers.get("Cache-Control"), "public, max-age=60, s-maxage=300");
     const next = await client.callTool({ name: "set_theme", arguments: { hue: 120, chroma: 0.05 } });
     assert.ok(!next.isError);
     assert.equal((await client.callTool({ name: "get_theme", arguments: {} })).structuredContent.hue, 120);
-    assert.match(await (await fetch(`${base}/theme.css?same-theme`)).text(), /oklch\(40% 0\.05 240\)/);
+    assert.deepEqual(await (await fetch(`${base}/theme.json?same-theme`)).json(), { hue: 240, chroma: 0.05 });
     assert.equal((await fetch(`${base}/`)).status, 200);
     assert.equal((await fetch(`${base}/works/katasu-me`)).status, 200);
     assert.equal((await fetch(`${base}/missing-page`)).status, 404);

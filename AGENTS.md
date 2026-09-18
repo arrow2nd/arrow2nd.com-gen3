@@ -1,6 +1,6 @@
 # プロジェクト構成
 
-HonoX + hono/jsx + CSS Modules + SSG。ページはCloudflare Workersのstatic assetsとして配信する。配信用Workerは `/mcp` と `/theme.css` のみを動的に処理する。
+HonoX + hono/jsx + CSS Modules + SSG。ページはCloudflare Workersのstatic assetsとして配信する。配信用Workerは `/mcp` と `/theme.json` のみを動的に処理する。
 
 技術選定の経緯と根拠は [docs/adr/](./docs/adr/README.md) を参照。構成を変更する前に必ず該当 ADR を読むこと。
 

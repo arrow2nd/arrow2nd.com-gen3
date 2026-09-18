@@ -9,6 +9,30 @@ import {
   parseStoredTheme,
   validateTheme,
 } from "../shared/theme.ts";
+import { parseThemeInput } from "../shared/theme-input.ts";
+
+test("クライアントは有限数かつ許容範囲内の配色だけを受け入れる", () => {
+  assert.deepEqual(parseThemeInput({ hue: 0, chroma: 0 }), { hue: 0, chroma: 0 });
+  assert.deepEqual(parseThemeInput({ hue: 359.9, chroma: 0.067 }), { hue: 359.9, chroma: 0.067 });
+  for (const input of [
+    null,
+    [],
+    "red",
+    {},
+    { hue: "21); color: red; </script><script>alert(1)</script>", chroma: 0.05 },
+    { hue: "21", chroma: 0.05 },
+    { hue: 21, chroma: "0.05" },
+    { hue: Number.NaN, chroma: 0.05 },
+    { hue: Number.POSITIVE_INFINITY, chroma: 0.05 },
+    { hue: 21, chroma: Number.NaN },
+    { hue: 21, chroma: Number.POSITIVE_INFINITY },
+    { hue: -1, chroma: 0.05 },
+    { hue: 360, chroma: 0.05 },
+    { hue: 21, chroma: -0.01 },
+    { hue: 21, chroma: 0.068 },
+  ])
+    assert.equal(parseThemeInput(input), null);
+});
 
 test("配色の輝度計算と入力検証がCSSの生成規則に一致する", async () => {
   assert.equal(contrast([0, 0, 0], [1, 1, 1]), 21);

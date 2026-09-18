@@ -8,7 +8,7 @@
   "observability": { "enabled": true, "traces": { "enabled": true } },
   "assets": {
     "binding": "ASSETS",
-    "run_worker_first": ["/mcp", "/theme.css"],
+    "run_worker_first": ["/mcp", "/theme.json"],
     "directory": "./dist",
     "not_found_handling": "404-page"
   }
