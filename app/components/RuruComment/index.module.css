@@ -1,0 +1,30 @@
+.root {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.avatar {
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.message {
+  min-width: 0;
+}
+
+.name {
+  margin-bottom: 0.4rem;
+  font-family: var(--font-latin);
+  font-size: 0.875rem;
+  color: var(--color-text-head);
+}
+
+.bubble {
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0 16px 16px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

@@ -1,6 +1,8 @@
 import Carousel from "../../islands/Carousel";
 import type { Work } from "../../lib/works";
+import DashedHeading from "../DashedHeading";
 import MarkdownContent from "../MarkdownContent";
+import RuruComment from "../RuruComment";
 import styles from "./index.module.css";
 
 type Props = {
@@ -29,6 +31,12 @@ export default function WorkDetail({ work }: Props) {
         <h1 class={styles.title}>{work.title}</h1>
         <p class={styles.category}>#{work.category}</p>
         <MarkdownContent Content={work.Content} />
+        {work.ruruComment && (
+          <section class={styles.comment} aria-label="Ruruにきいてみました">
+            <DashedHeading as="h2">Ruruにきいてみました</DashedHeading>
+            <RuruComment text={work.ruruComment.text} />
+          </section>
+        )}
       </div>
     </main>
   );

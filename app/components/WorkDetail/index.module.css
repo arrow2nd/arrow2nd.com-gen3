@@ -55,6 +55,10 @@
   font-weight: 600;
 }
 
+.comment {
+  margin-top: 2rem;
+}
+
 .category {
   font-family: var(--font-latin);
   width: fit-content;

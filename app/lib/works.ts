@@ -1,4 +1,5 @@
 import type { FC } from "hono/jsx";
+import { commentSchema, type RuruComment } from "../../shared/ruru-comment";
 import { CATEGORY_ORDER, type WorkCategory } from "./categories";
 
 type Frontmatter = {
@@ -23,9 +24,18 @@ export type Work = {
   images: string[];
   createdAt: string;
   Content: WorkModule["default"];
+  ruruComment?: RuruComment;
 };
 
 const modules = import.meta.glob<WorkModule>("../data/works/*/*/index.mdx", { eager: true });
+const commentModules = import.meta.glob("../data/works/*/*/ruru-comment.json", { eager: true, import: "default" });
+const comments = Object.fromEntries(
+  Object.entries(commentModules).map(([path, value]) => {
+    const parsed = commentSchema.safeParse(value);
+    if (!parsed.success) throw new Error(`Ruruコメントが不正です: ${path}`);
+    return [path.replace(/ruru-comment\.json$/, "index.mdx"), parsed.data];
+  }),
+);
 
 const works: Work[] = Object.entries(modules)
   .flatMap(([path, mod]) => {
@@ -46,6 +56,7 @@ const works: Work[] = Object.entries(modules)
         images: mod.frontmatter.images,
         createdAt: mod.frontmatter.createdAt,
         Content: mod.default,
+        ruruComment: comments[path],
       },
     ];
   })

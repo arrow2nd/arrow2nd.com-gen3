@@ -14,7 +14,8 @@
   "dependencies": {
     "budoux": "^0.9.2",
     "hono": "^4.13.8",
-    "honox": "^0.1.61"
+    "honox": "^0.1.61",
+    "zod": "^4"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.14",
