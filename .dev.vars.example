@@ -1,0 +1,2 @@
+# .dev.varsへコピーし、ローカル専用のランダムなトークンを設定する。
+PORTFOLIO_MCP_TOKEN=

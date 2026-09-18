@@ -14,3 +14,4 @@ arrow2nd.com (gen3) の技術的な意思決定の記録。
 | [0008](./0008-budoux-parser-shim.md) | budoux は parser を直接参照する | 採用 |
 | [0009](./0009-single-breakpoint-hardcoded.md) | ブレークポイントは固定セットをハードコードする | 採用 |
 | [0010](./0010-work-detail-page-only.md) | 作品詳細を通常のページ表示に統一する | 採用 |
+| [0011](./0011-ruru-mcp-with-static-assets.md) | Ruru連携用MCPと配色CSSを静的配信に併設する | 採用 |

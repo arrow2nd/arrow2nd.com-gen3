@@ -3,6 +3,8 @@
 - ステータス: 採用
 - 日付: 2026-06-11
 
+「Workerスクリプトなし」の部分は [ADR 0011](./0011-ruru-mcp-with-static-assets.md) で置き換えた。ページのSSG配信は維持する。
+
 ## コンテキスト
 
 作品データは `app/data/works/**/*.mdx` で管理され、コンテンツは全てビルド時に確定する。当初は SSR (Worker で都度レンダリング + fragment への Cache-Control 付与) も検討した。

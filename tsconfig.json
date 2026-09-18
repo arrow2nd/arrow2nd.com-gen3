@@ -11,5 +11,5 @@
     "jsxImportSource": "hono/jsx",
     "types": ["vite/client"]
   },
-  "include": ["app"]
+  "include": ["app", "shared"]
 }

@@ -1,0 +1,5 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": { "lib": ["ESNext"], "types": [] },
+  "include": ["./", "../shared", "../worker-configuration.d.ts"]
+}

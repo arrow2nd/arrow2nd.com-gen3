@@ -1,6 +1,6 @@
 # プロジェクト構成
 
-HonoX + hono/jsx + CSS Modules + SSG。Cloudflare Workers の static assets として配信する(Worker スクリプトなし)。
+HonoX + hono/jsx + CSS Modules + SSG。ページはCloudflare Workersのstatic assetsとして配信する。配信用Workerは `/mcp` と `/theme.css` のみを動的に処理する。
 
 技術選定の経緯と根拠は [docs/adr/](./docs/adr/README.md) を参照。構成を変更する前に必ず該当 ADR を読むこと。
 
@@ -21,6 +21,13 @@ Vite/honox の制約を回避するための3点セット。どれか欠ける�
 `pnpm build` = client ビルド → SSR ビルド(dist/index.js) → `scripts/build-ssg.mjs` が `toSSG` で静的化。
 `@hono/vite-ssg` は内部の ssrLoadModule が CSS Modules と非互換なので使わない。
 動的ルートは `ssgParams`(hono/ssg) で slug を列挙する。
+
+## Ruru連携
+
+- 配信用Workerは `worker/index.ts`。SSG用の `dist/index.js` とは別に扱う。
+- 配色検証は `shared/theme.ts`。明度・彩度の生成規則をCSS側で変更した場合、検証も同時に変更する。
+- コメントは作品ディレクトリの `ruru-comment.json`。通常ビルドからRuruを呼び出さない。
+- Workerの型は `pnpm typegen` で生成する。生成ファイルはGit管理外。Node.js 24以上で `pnpm test` と `pnpm typecheck` を実行する。
 
 ## dev の注意点
 

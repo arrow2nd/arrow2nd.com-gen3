@@ -3,15 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "dev": "node scripts/build-images.mjs && vite",
     "build": "node scripts/build-images.mjs && vite build --mode client && vite build && node ./scripts/build-ssg.mjs",
     "preview": "wrangler dev",
+    "test": "node --test --test-isolation=none tests/*.test.mjs",
+    "typegen": "wrangler types",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p worker/tsconfig.json",
     "deploy": "wrangler deploy",
     "lint": "biome check",
     "format": "biome format --write"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
     "budoux": "^0.9.2",
     "hono": "^4.13.8",
     "honox": "^0.1.61",
