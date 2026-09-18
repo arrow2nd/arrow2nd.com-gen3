@@ -17,7 +17,7 @@
 }
 
 :root {
-  transition: --color-base 0.6s ease;
+  transition: --color-base 1.2s ease;
   --font-latin: "Poppins", sans-serif;
 
   --color-base: oklch(40% 0.067 21);
