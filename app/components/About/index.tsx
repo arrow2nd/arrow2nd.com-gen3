@@ -16,19 +16,21 @@ export default function About() {
 
         <div class={styles.section}>
           <DashedHeading as="h3">これも好き</DashedHeading>
-          <p class={styles.text}>フレデリック / 花奏かのん / 長瀬有花 / somunia / Aiobahn / 中村さんそ / VALIS</p>
+          <p class={styles.text}>
+            フレデリック / 花奏かのん / 長瀬有花 / somunia / Aiobahn / 中村さんそ / KMNZ / VALIS
+          </p>
         </div>
 
         <div class={styles.section}>
           <DashedHeading as="h3">よく使う技術</DashedHeading>
-          <p class={styles.text}>TypeScript / Golang / React / Next.js / GitHub Actions / Playwright</p>
+          <p class={styles.text}>TypeScript / Golang / React</p>
         </div>
 
         <div class={styles.section}>
           <DashedHeading as="h3">やりたいこと</DashedHeading>
           <ul class={styles.list}>
             <li>
-              <BudouX>触り心地を重視したWebサイト・アプリをつくること</BudouX>
+              <BudouX>ストレスがなく手触りのよいWebサイト・アプリをつくること</BudouX>
             </li>
             <li>
               <BudouX>インターネットカルチャーと技術が交わるところで何かつくること</BudouX>
