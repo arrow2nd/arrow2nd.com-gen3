@@ -34,7 +34,7 @@ THEME_UI_TEST=1 node --test tests/theme-ui.test.mjs
 
 ### コメントを貰う
 
-コメントの追加・再生成は `ruru-work-comment` スキルを使用する。ブラウザ確認には `agent-browser` を使用する。
+これは開発マシンで codex が `ruru-work-comment` スキルで Ruru を呼ぶことで実現してます。
 
 ```bash
 # ローカルプレビューのPC・SP表示
