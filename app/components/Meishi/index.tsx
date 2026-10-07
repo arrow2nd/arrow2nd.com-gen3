@@ -1,3 +1,4 @@
+import { profile } from "../../data/profile";
 import BudouX from "../BudouX/budoux";
 import Neko from "../Neko";
 import styles from "./index.module.css";
@@ -9,20 +10,20 @@ export default function Meishi() {
       <h1 class={styles.heading}>
         <span class={styles.greeting}>はじめまして、</span>
         <span>
-          <span class={styles.name}>arrow2nd</span>
+          <span class={styles.name}>{profile.name}</span>
           <span class={styles.suffix}>です。</span>
         </span>
       </h1>
       <div class={styles.description}>
         <p>
-          <BudouX>フロントエンドエンジニア</BudouX>
+          <BudouX>{profile.jobTitle}</BudouX>
         </p>
         <p class={styles.hobby}>
-          <BudouX>触りたくなるデザインと、</BudouX>
+          <BudouX>{profile.interests[0]}</BudouX>
           <br />
-          <BudouX>やさしいインターネットと、</BudouX>
+          <BudouX>{profile.interests[1]}</BudouX>
           <br />
-          <BudouX>口中の水分が全部持っていかれる食べ物がすき</BudouX>
+          <BudouX>{profile.interests[2]}</BudouX>
         </p>
       </div>
     </section>

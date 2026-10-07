@@ -7,6 +7,7 @@ import AppCss from "../components/AppCss";
 import Footer from "../components/Footer";
 import BottomMenu from "../islands/BottomMenu";
 import { buildPersonJsonLd, type JsonLd, JsonLdScript } from "../lib/json-ld";
+import { toAbsoluteUrl } from "../lib/site";
 
 type RendererComponentProps = {
   children?: Child;
@@ -18,10 +19,7 @@ type RendererComponentProps = {
   jsonLd?: JsonLd | JsonLd[];
 };
 
-const SITE_URL = "https://arrow2nd.com/";
 const DEFAULT_IMAGE_URL = "https://avatars.githubusercontent.com/u/44780846?v=4";
-
-const toAbsoluteUrl = (pathOrUrl: string) => new URL(pathOrUrl, SITE_URL).toString();
 
 export default jsxRenderer((props, c) => {
   const {
@@ -36,6 +34,7 @@ export default jsxRenderer((props, c) => {
   const jsonLdGraph = [buildPersonJsonLd(), ...(Array.isArray(jsonLd) ? jsonLd : [jsonLd])];
   const canonicalUrl = toAbsoluteUrl(url);
   const ogImageUrl = toAbsoluteUrl(imageUrl);
+  const markdownUrl = article ? `${canonicalUrl}.md` : url === "/" ? toAbsoluteUrl("/index.md") : undefined;
 
   return (
     <html lang="ja">
@@ -46,6 +45,7 @@ export default jsxRenderer((props, c) => {
         <meta name="description" content={description} />
         <meta name="image" content={ogImageUrl} />
         <link rel="canonical" href={canonicalUrl} />
+        {markdownUrl && <link rel="alternate" type="text/markdown" href={markdownUrl} />}
         <link rel="icon" href="/favicon.ico" />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:type" content={article ? "article" : "website"} />

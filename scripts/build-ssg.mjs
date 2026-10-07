@@ -34,11 +34,18 @@ const app = (await import(new URL("../dist/index.js", import.meta.url))).default
 
 const result = await toSSG(app, fs, {
   dir: OUTPUT_DIR,
+  extensionMap: { "text/html": "html", "text/markdown": "md" },
   plugins: [sitemapPlugin],
 });
 
 if (!result.success) {
   throw result.error;
+}
+
+// 元のfrontmatterと本文を保ち、HTMLと同じビルドでMarkdown版も更新する。
+for await (const source of fs.glob("app/data/works/*/*/index.mdx")) {
+  const slug = path.basename(path.dirname(source));
+  await fs.copyFile(source, path.join(OUTPUT_DIR, "works", `${slug}.md`));
 }
 
 // SSRバンドルはSSGレンダリング専用なので配信物から除く

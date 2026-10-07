@@ -1,8 +1,6 @@
 # プロジェクト構成
 
-HonoX + hono/jsx + CSS Modules + SSG。ページはCloudflare Workersのstatic assetsとして配信する。配信用Workerは `/mcp` と `/theme.json` のみを動的に処理する。
-
-技術選定の経緯と根拠は [docs/adr/](./docs/adr/README.md) を参照。構成を変更する前に必ず該当 ADR を読むこと。
+HonoX + hono/jsx + CSS Modules + SSG。ページはCloudflare Workersのstatic assetsとして配信する。配信用Workerは `/mcp` と `/theme.json` の動的処理に加え、トップ・作品ページの `Accept` ヘッダーでHTMLとMarkdownを切り替える。
 
 - React は使っていない。JSX は `hono/jsx`(サーバー) / `hono/jsx/dom`(islands)。React 専用ライブラリは動かない
 - ページは `/`(ペライチ)と `/works/:slug`(作品詳細)のみ。作品詳細は通常のページ遷移で表示する
@@ -21,6 +19,8 @@ Vite/honox の制約を回避するための3点セット。どれか欠ける�
 `pnpm build` = client ビルド → SSR ビルド(dist/index.js) → `scripts/build-ssg.mjs` が `toSSG` で静的化。
 `@hono/vite-ssg` は内部の ssrLoadModule が CSS Modules と非互換なので使わない。
 動的ルートは `ssgParams`(hono/ssg) で slug を列挙する。
+作品のMDX原文は同じビルドで `/works/:slug.md` にコピーする。Markdownの配信確認は `pnpm build` 後の `pnpm preview` を使う。
+トップの `/index.md` は `app/server.ts` で登録し、HTMLと共有する `app/data/profile.ts` と作品データから生成する。
 
 ## Ruru連携
 

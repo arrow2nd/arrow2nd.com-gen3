@@ -1,7 +1,7 @@
 import { raw } from "hono/html";
+import { SITE_URL, toAbsoluteUrl } from "./site";
 import type { Work } from "./works";
 
-const SITE_URL = "https://arrow2nd.com";
 const PERSON_ID = `${SITE_URL}/#person`;
 
 type JsonLdValue = string | number | boolean | null | JsonLd | JsonLdValue[];
@@ -13,10 +13,6 @@ export type JsonLd = {
 type Props = {
   data: JsonLd | JsonLd[];
 };
-
-function absoluteUrl(pathOrUrl: string): string {
-  return new URL(pathOrUrl, SITE_URL).toString();
-}
 
 function stringifyJsonLd(data: JsonLd | JsonLd[]): string {
   const graph = Array.isArray(data) ? data : [data];
@@ -53,7 +49,7 @@ export function buildCreativeWorkJsonLd(work: Work): JsonLd {
     mainEntityOfPage: pageUrl,
     dateCreated: work.createdAt,
     genre: work.category,
-    image: work.images.map(absoluteUrl),
+    image: work.images.map(toAbsoluteUrl),
     author: { "@id": PERSON_ID },
     creator: { "@id": PERSON_ID },
     inLanguage: "ja",

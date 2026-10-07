@@ -1,3 +1,4 @@
+import { profile } from "../../data/profile";
 import BudouX from "../BudouX/budoux";
 import DashedHeading from "../DashedHeading";
 import Career from "./Career";
@@ -9,32 +10,21 @@ export default function About() {
       <h2 class={styles.heading}>about</h2>
 
       <div class={styles.sections}>
-        <div class={styles.section}>
-          <DashedHeading as="h3">これ好き</DashedHeading>
-          <p class={styles.text}>シャニマス / ARIA / 上伊那ぼたん / 薬袋カルテ</p>
-        </div>
-
-        <div class={styles.section}>
-          <DashedHeading as="h3">これも好き</DashedHeading>
-          <p class={styles.text}>
-            フレデリック / 花奏かのん / 長瀬有花 / somunia / Aiobahn / 中村さんそ / KMNZ / VALIS
-          </p>
-        </div>
-
-        <div class={styles.section}>
-          <DashedHeading as="h3">よく使う技術</DashedHeading>
-          <p class={styles.text}>TypeScript / Golang / React</p>
-        </div>
+        {profile.about.map(({ title, text }) => (
+          <div class={styles.section} key={title}>
+            <DashedHeading as="h3">{title}</DashedHeading>
+            <p class={styles.text}>{text}</p>
+          </div>
+        ))}
 
         <div class={styles.section}>
           <DashedHeading as="h3">やりたいこと</DashedHeading>
           <ul class={styles.list}>
-            <li>
-              <BudouX>ストレスがなく手触りのよいWebサイト・アプリをつくること</BudouX>
-            </li>
-            <li>
-              <BudouX>インターネットカルチャーと技術が交わるところで何かつくること</BudouX>
-            </li>
+            {profile.goals.map((goal) => (
+              <li key={goal}>
+                <BudouX>{goal}</BudouX>
+              </li>
+            ))}
           </ul>
         </div>
 
