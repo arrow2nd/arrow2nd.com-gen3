@@ -18,7 +18,7 @@
     "format": "biome format --write"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.26.0",
+    "@modelcontextprotocol/sdk": "^1.32.0",
     "budoux": "^0.9.2",
     "hono": "^4.13.8",
     "honox": "^0.1.61",
