@@ -15,11 +15,11 @@ importers:
         specifier: ^0.9.2
         version: 0.9.2(supports-color@10.2.2)
       hono:
-        specifier: ^4.13.8
-        version: 4.13.8
+        specifier: ^4.13.11
+        version: 4.13.11
       honox:
         specifier: ^0.1.61
-        version: 0.1.61(hono@4.13.8)(supports-color@10.2.2)(wrangler@4.135.0(@types/node@26.6.1))
+        version: 0.1.61(hono@4.13.11)(supports-color@10.2.2)(wrangler@4.135.0(@types/node@26.6.1))
       zod:
         specifier: ^4
         version: 4.6.5
@@ -35,7 +35,7 @@ importers:
         version: 5.3.0
       '@hono/vite-build':
         specifier: ^1.11.1
-        version: 1.11.1(hono@4.13.8)
+        version: 1.11.1(hono@4.13.11)
       '@mdx-js/rollup':
         specifier: ^3.1.1
         version: 3.1.1(rollup@4.63.3)(supports-color@10.2.2)
@@ -1606,8 +1606,8 @@ packages:
   hast-util-whitespace@3.0.0:
     resolution: {integrity: sha512-88JUN06ipLwsnv+dVn+OIYOvAuvBMy/Qoi6O7mQHxdPXpjy+Cd6xRkWwux7DKO+4sYILtLBRIKgsdpS2gQc7qw==}
 
-  hono@4.13.8:
-    resolution: {integrity: sha512-/Gng7NfoykZl2pjukW5Z6+8Yxm3BPRf86GTbQnt0SbySkvax4fyL4H3HhY1cCpBGmiW9XDRFzRV+CXK2W8QudQ==}
+  hono@4.13.11:
+    resolution: {integrity: sha512-/SMX/RQNJn7oNmFwH6DtwDqcrzZU2otm1FD6OJe2cWF6cfy/F8hq0XVBv7xW3FTJshRQwuBnXHDq2kNsdZnshg==}
     engines: {node: '>=16.9.0'}
 
   honox@0.1.61:
@@ -2666,22 +2666,22 @@ snapshots:
 
   '@fontsource/poppins@5.3.0': {}
 
-  '@hono/node-server@1.19.17(hono@4.13.8)':
+  '@hono/node-server@1.19.17(hono@4.13.11)':
     dependencies:
-      hono: 4.13.8
+      hono: 4.13.11
 
-  '@hono/node-server@2.1.1(hono@4.13.8)':
+  '@hono/node-server@2.1.1(hono@4.13.11)':
     dependencies:
-      hono: 4.13.8
+      hono: 4.13.11
 
-  '@hono/vite-build@1.11.1(hono@4.13.8)':
+  '@hono/vite-build@1.11.1(hono@4.13.11)':
     dependencies:
-      hono: 4.13.8
+      hono: 4.13.11
 
-  '@hono/vite-dev-server@0.25.3(hono@4.13.8)(wrangler@4.135.0(@types/node@26.6.1))':
+  '@hono/vite-dev-server@0.25.3(hono@4.13.11)(wrangler@4.135.0(@types/node@26.6.1))':
     dependencies:
-      '@hono/node-server': 1.19.17(hono@4.13.8)
-      hono: 4.13.8
+      '@hono/node-server': 1.19.17(hono@4.13.11)
+      hono: 4.13.11
       minimatch: 9.0.9
     optionalDependencies:
       wrangler: 4.135.0(@types/node@26.6.1)
@@ -2853,7 +2853,7 @@ snapshots:
 
   '@modelcontextprotocol/sdk@1.30.0(supports-color@10.2.2)(zod@4.6.5)':
     dependencies:
-      '@hono/node-server': 2.1.1(hono@4.13.8)
+      '@hono/node-server': 2.1.1(hono@4.13.11)
       ajv: 8.20.0
       ajv-formats: 3.0.1(ajv@8.20.0)
       content-type: 1.0.5
@@ -2863,7 +2863,7 @@ snapshots:
       eventsource-parser: 3.1.1
       express: 5.2.1(supports-color@10.2.2)
       express-rate-limit: 8.7.0(express@5.2.1(supports-color@10.2.2))(supports-color@10.2.2)
-      hono: 4.13.8
+      hono: 4.13.11
       jose: 6.2.12
       json-schema-typed: 8.0.2
       pkce-challenge: 5.0.1
@@ -3810,16 +3810,16 @@ snapshots:
     dependencies:
       '@types/hast': 3.0.5
 
-  hono@4.13.8: {}
+  hono@4.13.11: {}
 
-  honox@0.1.61(hono@4.13.8)(supports-color@10.2.2)(wrangler@4.135.0(@types/node@26.6.1)):
+  honox@0.1.61(hono@4.13.11)(supports-color@10.2.2)(wrangler@4.135.0(@types/node@26.6.1)):
     dependencies:
       '@babel/generator': 7.29.1
       '@babel/parser': 7.29.3
       '@babel/traverse': 7.29.0(supports-color@10.2.2)
       '@babel/types': 7.29.0
-      '@hono/vite-dev-server': 0.25.3(hono@4.13.8)(wrangler@4.135.0(@types/node@26.6.1))
-      hono: 4.13.8
+      '@hono/vite-dev-server': 0.25.3(hono@4.13.11)(wrangler@4.135.0(@types/node@26.6.1))
+      hono: 4.13.11
       jsonc-parser: 3.3.1
       precinct: 12.2.0(supports-color@10.2.2)
     optionalDependencies:
