@@ -10,3 +10,5 @@ minimumReleaseAgeExclude:
   - miniflare@5.20260918.0-alpha
   - workerd@1.20260918.1
   - wrangler@4.135.0
+overrides:
+  undici@7: ^7.30.1
