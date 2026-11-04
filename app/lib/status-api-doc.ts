@@ -1,7 +1,7 @@
 import { HEART_RATE_STALE_AFTER_MS } from "../../shared/owner-status";
 import { toAbsoluteUrl } from "./site";
 
-const minutes = (ms: number) => ms / 60 / 1000;
+const hours = (ms: number) => ms / 60 / 60 / 1000;
 
 // staleになるまでの時間は実装の定数から埋め込み、説明と実装の食い違いを防ぐ。
 export function statusApiMarkdown() {
@@ -12,7 +12,7 @@ export function statusApiMarkdown() {
 arrow2nd の最新の心拍数と、起きているかどうかの推定を公開しています。値はパーソナルエージェントの Ruru が Pixel Watch から取得したものです。
 
 - 認証は不要です。どのオリジンからも読めます（\`Access-Control-Allow-Origin: *\`）
-- 計測から公開まで、数十分の遅れがあります
+- 計測から公開まで、数時間の遅れが出ることがあります
 - 応答は最大30秒キャッシュされます
 
 ## REST API
@@ -27,7 +27,7 @@ arrow2nd の最新の心拍数と、起きているかどうかの推定を公�
 
 - \`bpm\`: 心拍数。まだ届いていない場合は \`null\`
 - \`observedAt\`: 計測した時刻（ISO 8601）。まだ届いていない場合は \`null\`
-- \`stale\`: 計測から${minutes(HEART_RATE_STALE_AFTER_MS)}分を超えていると \`true\`
+- \`stale\`: 計測から${hours(HEART_RATE_STALE_AFTER_MS)}時間を超えていると \`true\`
 
 ### GET ${toAbsoluteUrl("/api/awake")}
 

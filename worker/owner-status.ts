@@ -5,7 +5,14 @@ import { bearerAuth } from "hono/bearer-auth";
 import { bodyLimit } from "hono/body-limit";
 import { cors } from "hono/cors";
 import { z } from "zod";
-import { assertNotFuture, evaluateAwake, publicHeartRate, type Signals, signalsSchema } from "../shared/owner-status";
+import {
+  assertNotFuture,
+  evaluateAwake,
+  HEART_RATE_STALE_AFTER_MS,
+  publicHeartRate,
+  type Signals,
+  signalsSchema,
+} from "../shared/owner-status";
 
 type AppEnv = { Bindings: Env };
 
@@ -86,7 +93,7 @@ function createPublicMcpServer(store: Store, origin: string) {
   const server = new McpServer(
     { name: "arrow2nd-status", version: "1.0.0" },
     {
-      instructions: `arrow2ndの最新の心拍数と、起きているかどうかの推定を返す読み取り専用のサーバーです。値は計測から数十分遅れます。is_awakeのawakeがnullなら判断できない状態で、confidenceがlowの推定は外れることがあります。詳しい仕様は${origin}/api.mdにあります。`,
+      instructions: `arrow2ndの最新の心拍数と、起きているかどうかの推定を返す読み取り専用のサーバーです。値は計測から数時間遅れることがあります。is_awakeのawakeがnullなら判断できない状態で、confidenceがlowの推定は外れることがあります。詳しい仕様は${origin}/api.mdにあります。`,
     },
   );
   const readOnly = { readOnlyHint: true, openWorldHint: false };
@@ -94,8 +101,7 @@ function createPublicMcpServer(store: Store, origin: string) {
   server.registerTool(
     "get_heart_rate",
     {
-      description:
-        "arrow2ndの最新の心拍数(bpm)と計測時刻を返します。数十分程度の遅れがあり、30分より古い値はstale=trueになります。",
+      description: `arrow2ndの最新の心拍数(bpm)と計測時刻を返します。数時間の遅れが出ることがあり、${HEART_RATE_STALE_AFTER_MS / 60 / 60 / 1000}時間より古い値はstale=trueになります。`,
       inputSchema: z.strictObject({}),
       outputSchema: heartRateOutput,
       annotations: readOnly,

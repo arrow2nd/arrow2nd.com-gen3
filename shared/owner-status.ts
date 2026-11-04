@@ -13,7 +13,8 @@ export type Signals = z.infer<typeof signalsSchema>;
 const MINUTE = 60 * 1000;
 // Ruruは変化がなくても15分ごとに送る。3回分届かなければRuruの停止とみなす。
 const SIGNALS_STALE_AFTER_MS = 45 * MINUTE;
-export const HEART_RATE_STALE_AFTER_MS = 30 * MINUTE;
+// 時計からRuruへの同期に数時間かかることがあるため、長めに取る。
+export const HEART_RATE_STALE_AFTER_MS = 3 * 60 * MINUTE;
 // Ruruとの時計のずれを許容する上限。これより未来の時刻は不正な入力として拒否する。
 const MAX_CLOCK_SKEW_MS = 5 * MINUTE;
 const RECENT_WAKE_MS = 3 * 60 * MINUTE;
