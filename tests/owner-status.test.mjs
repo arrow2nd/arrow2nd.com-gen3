@@ -4,6 +4,7 @@ import {
   assertNotFuture,
   diarySchema,
   evaluateAwake,
+  isDiaryDateInRange,
   publicHeartRate,
   sha256Hex,
   signalsSchema,
@@ -119,4 +120,13 @@ test("日記は本文のハッシュを持ち、前後の空白や上限超過�
   ]) {
     assert.equal(diarySchema.safeParse(invalid).success, false);
   }
+});
+
+test("日記の日付は公開開始日からJSTの翌日までに限る", () => {
+  // JSTでは2026-11-05の03:00。
+  assert.equal(isDiaryDateInRange("2026-11-01", night), true);
+  assert.equal(isDiaryDateInRange("2026-10-31", night), false);
+  assert.equal(isDiaryDateInRange("2026-11-06", night), true);
+  assert.equal(isDiaryDateInRange("2026-11-07", night), false);
+  assert.equal(isDiaryDateInRange("9999-12-31", night), false);
 });

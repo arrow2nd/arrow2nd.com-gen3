@@ -110,6 +110,10 @@ test("ローカルWorkerの状態公開API・書き込み認証・公開MCP", { 
   const heartRate = await fetch(`${base}/api/heart-rate`, { headers: { Origin: "https://example.com" } });
   assert.equal(heartRate.headers.get("Access-Control-Allow-Origin"), "*");
   assert.deepEqual(await heartRate.json(), { bpm: 88, observedAt: now, stale: false });
+  // 読み取りでキャッシュされた後でも、同じ拠点ではPUTした値がすぐ返る。
+  assert.equal((await put("/api/ruru/signals", { ...signals, heartRate: { bpm: 70, observedAt: now } })).status, 204);
+  assert.equal((await (await fetch(`${base}/api/heart-rate`)).json()).bpm, 70);
+  assert.equal((await put("/api/ruru/signals", signals)).status, 204);
   const awake = await (await fetch(`${base}/api/awake`)).json();
   assert.equal(awake.awake, true);
   assert.equal(awake.confidence, "high");
@@ -119,12 +123,14 @@ test("ローカルWorkerの状態公開API・書き込み認証・公開MCP", { 
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
   const sha256 = Buffer.from(digest).toString("hex");
   const diary = { text, generatedAt: now, approvedAt: now, sha256 };
-  assert.equal((await put("/api/ruru/diary/2099-01-01", diary, null)).status, 401);
+  const today = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  assert.equal((await put(`/api/ruru/diary/${today}`, diary, null)).status, 401);
   assert.equal((await put("/api/ruru/diary/2099-13-01", diary)).status, 400);
-  assert.equal((await put("/api/ruru/diary/2099-01-01", { ...diary, text: "改ざん" })).status, 400);
-  assert.equal((await put("/api/ruru/diary/2099-01-01", diary)).status, 204);
-  assert.equal((await put("/api/ruru/diary/2099-01-01", diary)).status, 204);
-  assert.deepEqual(await (await fetch(`${base}/api/ruru/diary/2099-01-01`)).json(), { date: "2099-01-01", ...diary });
+  assert.equal((await put("/api/ruru/diary/2099-01-01", diary)).status, 400);
+  assert.equal((await put(`/api/ruru/diary/${today}`, { ...diary, text: "改ざん" })).status, 400);
+  assert.equal((await put(`/api/ruru/diary/${today}`, diary)).status, 204);
+  assert.equal((await put(`/api/ruru/diary/${today}`, diary)).status, 204);
+  assert.deepEqual(await (await fetch(`${base}/api/ruru/diary/${today}`)).json(), { date: today, ...diary });
   assert.equal((await fetch(`${base}/api/ruru/diary/2098-01-01`)).status, 404);
   assert.equal((await fetch(`${base}/api/ruru/diary/latest`)).status, 400);
 

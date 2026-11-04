@@ -24,6 +24,15 @@ export const diarySchema = z.strictObject({
 });
 export type Diary = z.infer<typeof diarySchema>;
 
+// これより前に日記は存在しない。範囲外の日付で、キャッシュを避けたKVの読み取りを起こさせないため。
+export const FIRST_DIARY_DATE = "2026-11-01";
+
+// JSTの翌日までを許容する。日付はYYYY-MM-DDなので文字列のまま比較できる。
+export function isDiaryDateInRange(date: string, now: Date) {
+  const tomorrow = new Date(now.getTime() + (9 + 24) * 60 * 60 * 1000).toISOString().slice(0, 10);
+  return date >= FIRST_DIARY_DATE && date <= tomorrow;
+}
+
 const MINUTE = 60 * 1000;
 // Ruruは変化がなくても15分ごとに送る。3回分届かなければRuruの停止とみなす。
 export const SIGNALS_STALE_AFTER_MS = 45 * MINUTE;
