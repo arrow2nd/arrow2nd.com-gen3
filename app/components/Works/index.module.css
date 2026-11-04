@@ -1,10 +1,10 @@
 .root {
-  padding: 0 1.5rem 6rem;
+  padding: 0 1.5rem 3rem;
   /* ボトムメニューからのスクロール時に上端へ余白を確保する */
   scroll-margin-top: 1.5rem;
 
   @media (width >= 768px) {
-    padding: 0 4rem 6rem;
+    padding: 0 4rem 3rem;
   }
 }
 
