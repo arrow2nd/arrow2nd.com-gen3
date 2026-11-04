@@ -89,6 +89,11 @@ async function serveByAccept(c: Context<AppEnv>, markdownPath: string) {
   const response = new Response(asset.body, asset);
   response.headers.append("Vary", "Accept");
 
+  // ASSETS.fetch経由の応答に _headers が効くとは限らないため、Markdownのcharsetをここでも指定する。
+  if (response.headers.get("Content-Type")?.startsWith("text/markdown")) {
+    response.headers.set("Content-Type", "text/markdown; charset=utf-8");
+  }
+
   return response;
 }
 

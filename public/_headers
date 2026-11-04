@@ -1,0 +1,3 @@
+# text/markdown は charset が必須(RFC 7763)。拡張子からの推定では付かないため明示する。
+/*.md
+  Content-Type: text/markdown; charset=utf-8
