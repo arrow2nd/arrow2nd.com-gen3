@@ -7,9 +7,9 @@ const hours = (ms: number) => ms / 60 / 60 / 1000;
 export function statusApiMarkdown() {
   const mcpUrl = toAbsoluteUrl("/mcp/public");
 
-  return `# arrow2nd の状態 API と MCP
+  return `# 俺 API & 俺 Remote MCP Server
 
-arrow2nd の最新の心拍数と、起きているかどうかの推定を公開しています。値はパーソナルエージェントの Ruru が Pixel Watch から取得したものです。
+arrow2nd の最新の心拍数と、起きているかどうかの推定をパブリックAPI & Remote MCP サーバーで公開しています。
 
 - 認証は不要です。どのオリジンからも読めます（\`Access-Control-Allow-Origin: *\`）
 - 計測から公開まで、数時間の遅れが出ることがあります
