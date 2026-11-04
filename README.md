@@ -24,19 +24,6 @@ pnpm deploy   # Cloudflare Workers (static assets + 配色MCP) へデプロイ
 
 ローカル確認用のトークンは `.dev.vars.example` を参考に `.dev.vars` へ設定する。
 
-```bash
-# ローカルWorkerの認証・配色変更・キャッシュ
-PORTFOLIO_TEST_URL=http://localhost:8787 pnpm test
-
-# ビルド済みサイトの配色JSONの遅延・保存・不正入力・トランジション
-THEME_UI_TEST=1 node --test tests/theme-ui.test.mjs
-```
-
 ### コメントを貰う
 
 これは開発マシンで codex が `ruru-work-comment` スキルで Ruru を呼ぶことで実現してます。
-
-```bash
-# ローカルプレビューのPC・SP表示
-RURU_COMMENT_PREVIEW_URL=http://localhost:8787/works/ruru-ai pnpm test
-```

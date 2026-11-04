@@ -82,8 +82,13 @@ const awakeOutput = z.object({
   evaluatedAt: z.string(),
 });
 
-function createPublicMcpServer(store: Store) {
-  const server = new McpServer({ name: "arrow2nd-status", version: "1.0.0" });
+function createPublicMcpServer(store: Store, origin: string) {
+  const server = new McpServer(
+    { name: "arrow2nd-status", version: "1.0.0" },
+    {
+      instructions: `arrow2ndの最新の心拍数と、起きているかどうかの推定を返す読み取り専用のサーバーです。値は計測から数十分遅れます。is_awakeのawakeがnullなら判断できない状態で、confidenceがlowの推定は外れることがあります。詳しい仕様は${origin}/api.mdにあります。`,
+    },
+  );
   const readOnly = { readOnlyHint: true, openWorldHint: false };
 
   server.registerTool(
@@ -179,7 +184,7 @@ ownerStatus.put("/api/ruru/signals", ruruAuth, bodyLimit({ maxSize: 4 * 1024 }),
 
 // 公開MCPは読み取り専用で秘密情報を扱わないため、認証もOriginの制限もかけない。
 ownerStatus.post("/mcp/public", bodyLimit({ maxSize: 16 * 1024 }), async (c) => {
-  const server = createPublicMcpServer(Store.from(c));
+  const server = createPublicMcpServer(Store.from(c), new URL(c.req.url).origin);
   const transport = new WebStandardStreamableHTTPServerTransport({ enableJsonResponse: true });
 
   await server.connect(transport);

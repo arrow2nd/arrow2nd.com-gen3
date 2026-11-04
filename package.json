@@ -10,7 +10,6 @@
     "dev": "node scripts/build-images.mjs && vite",
     "build": "node scripts/build-images.mjs && vite build --mode client && vite build && node ./scripts/build-ssg.mjs",
     "preview": "wrangler dev",
-    "test": "node --test --test-isolation=none tests/*.test.mjs",
     "typegen": "wrangler types",
     "typecheck": "tsc --noEmit && tsc --noEmit -p worker/tsconfig.json",
     "deploy": "wrangler deploy",

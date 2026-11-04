@@ -5,11 +5,11 @@ export const themeInputSchema = z.strictObject({
   chroma: z.number().min(0).max(0.067),
 });
 export const themeSchema = themeInputSchema.extend({ updatedAt: z.iso.datetime().nullable() });
-export type Theme = z.infer<typeof themeSchema>;
+type Theme = z.infer<typeof themeSchema>;
 export const DEFAULT_THEME: Theme = { hue: 21, chroma: 0.067, updatedAt: null };
 
 // CSS Color 4の変換式。色域外を拒否してブラウザごとのgamut mappingに依存しない。
-export function linearRgb(lightness: number, chroma: number, hue: number) {
+function linearRgb(lightness: number, chroma: number, hue: number) {
   const angle = (hue * Math.PI) / 180;
   const a = chroma * Math.cos(angle);
   const b = chroma * Math.sin(angle);
@@ -23,13 +23,13 @@ export function linearRgb(lightness: number, chroma: number, hue: number) {
   ];
 }
 
-export function contrast(foreground: number[], background: number[]) {
+function contrast(foreground: number[], background: number[]) {
   const luminance = (rgb: number[]) => 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
   const values = [luminance(foreground), luminance(background)].sort((a, b) => a - b);
   return (values[1] + 0.05) / (values[0] + 0.05);
 }
 
-export function assertContrast(foreground: number[], background: number[], minimum: number, name: string) {
+function assertContrast(foreground: number[], background: number[], minimum: number, name: string) {
   const ratio = contrast(foreground, background);
   if (ratio < minimum) {
     throw new Error(`${name}のコントラストが${ratio.toFixed(2)}:1です。${minimum}:1以上が必要です。`);
