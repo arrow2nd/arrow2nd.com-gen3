@@ -1,17 +1,24 @@
 .root {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.25rem;
   margin-top: 0.5rem;
-  color: var(--color-text-head);
-  font-family: var(--font-latin);
   /* 取得するまでは隠しておき、値が出たらフェードインさせる */
   opacity: 0;
   transition: opacity 0.3s ease;
 
   &[data-visible="true"] {
     opacity: 1;
+  }
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--color-text-head);
+  font-family: var(--font-latin);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
   }
 }
 
