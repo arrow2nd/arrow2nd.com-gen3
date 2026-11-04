@@ -25,7 +25,7 @@ Vite/honox の制約を回避するための3点セット。どれか欠ける�
 ## Ruru連携
 
 - 配信用Workerは `worker/index.ts`。SSG用の `dist/index.js` とは別に扱う。
-- 心拍・起きているか・Ruruの日記の公開は `worker/owner-status.ts`、契約と判定は `shared/owner-status.ts`。RuruがPUTで送り、公開APIと公開MCP(`/mcp/public`)は認証なしで読み取りだけを提供する。在宅かどうかを推測できる情報は契約に加えない。
+- 心拍と起きているかの公開は `worker/owner-status.ts`、契約と判定は `shared/owner-status.ts`。RuruがPUTで送り、公開APIと公開MCP(`/mcp/public`)は認証なしで読み取りだけを提供する。在宅かどうかを推測できる情報は契約に加えない。
 - 配色検証は `shared/theme.ts`。明度・彩度の生成規則をCSS側で変更した場合、検証も同時に変更する。
 - コメントは作品ディレクトリの `ruru-comment.json`。通常ビルドからRuruを呼び出さない。
 - Workerの型は `pnpm typegen` で生成する。生成ファイルはGit管理外。Node.js 24以上で `pnpm test` と `pnpm typecheck` を実行する。

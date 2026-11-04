@@ -119,21 +119,6 @@ test("ローカルWorkerの状態公開API・書き込み認証・公開MCP", { 
   assert.equal(awake.confidence, "high");
   assert.equal(Object.keys(awake).sort().join(), "awake,confidence,evaluatedAt");
 
-  const text = "テストの日記";
-  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
-  const sha256 = Buffer.from(digest).toString("hex");
-  const diary = { text, generatedAt: now, approvedAt: now, sha256 };
-  const today = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
-  assert.equal((await put(`/api/ruru/diary/${today}`, diary, null)).status, 401);
-  assert.equal((await put("/api/ruru/diary/2099-13-01", diary)).status, 400);
-  assert.equal((await put("/api/ruru/diary/2099-01-01", diary)).status, 400);
-  assert.equal((await put(`/api/ruru/diary/${today}`, { ...diary, text: "改ざん" })).status, 400);
-  assert.equal((await put(`/api/ruru/diary/${today}`, diary)).status, 204);
-  assert.equal((await put(`/api/ruru/diary/${today}`, diary)).status, 204);
-  assert.deepEqual(await (await fetch(`${base}/api/ruru/diary/${today}`)).json(), { date: today, ...diary });
-  assert.equal((await fetch(`${base}/api/ruru/diary/2098-01-01`)).status, 404);
-  assert.equal((await fetch(`${base}/api/ruru/diary/latest`)).status, 400);
-
   const preflight = await fetch(`${base}/api/ruru/signals`, {
     method: "OPTIONS",
     headers: { Origin: "https://evil.example", "Access-Control-Request-Method": "PUT" },
@@ -149,19 +134,9 @@ test("ローカルWorkerの状態公開API・書き込み認証・公開MCP", { 
     }),
   );
   try {
-    assert.deepEqual((await client.listTools()).tools.map((tool) => tool.name).sort(), [
-      "get_heart_rate",
-      "get_ruru_diary",
-      "is_awake",
-    ]);
+    assert.deepEqual((await client.listTools()).tools.map((tool) => tool.name).sort(), ["get_heart_rate", "is_awake"]);
     assert.equal((await client.callTool({ name: "get_heart_rate", arguments: {} })).structuredContent.bpm, 88);
     assert.equal((await client.callTool({ name: "is_awake", arguments: {} })).structuredContent.awake, true);
-    const latest = await client.callTool({ name: "get_ruru_diary", arguments: {} });
-    assert.equal(latest.structuredContent.text, text);
-    const missing = await client.callTool({ name: "get_ruru_diary", arguments: { date: "2098-01-01" } });
-    assert.equal(missing.isError, true);
-    const invalid = await client.callTool({ name: "get_ruru_diary", arguments: { date: "tomorrow" } });
-    assert.equal(invalid.isError, true);
   } finally {
     await client.close();
   }

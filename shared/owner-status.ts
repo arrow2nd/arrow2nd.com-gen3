@@ -11,28 +11,6 @@ export const signalsSchema = z.strictObject({
 });
 export type Signals = z.infer<typeof signalsSchema>;
 
-export const diaryDateSchema = z.iso.date();
-
-export const diarySchema = z.strictObject({
-  text: z
-    .string()
-    .min(1)
-    .refine((text) => text.trim() === text && [...text].length <= 400, "日記は前後に空白のない400文字以内です。"),
-  generatedAt: timestamp,
-  approvedAt: timestamp,
-  sha256: z.string().regex(/^[a-f0-9]{64}$/),
-});
-export type Diary = z.infer<typeof diarySchema>;
-
-// これより前に日記は存在しない。範囲外の日付で、キャッシュを避けたKVの読み取りを起こさせないため。
-export const FIRST_DIARY_DATE = "2026-11-01";
-
-// JSTの翌日までを許容する。日付はYYYY-MM-DDなので文字列のまま比較できる。
-export function isDiaryDateInRange(date: string, now: Date) {
-  const tomorrow = new Date(now.getTime() + (9 + 24) * 60 * 60 * 1000).toISOString().slice(0, 10);
-  return date >= FIRST_DIARY_DATE && date <= tomorrow;
-}
-
 const MINUTE = 60 * 1000;
 // Ruruは変化がなくても15分ごとに送る。3回分届かなければRuruの停止とみなす。
 export const SIGNALS_STALE_AFTER_MS = 45 * MINUTE;
@@ -105,9 +83,4 @@ export function evaluateAwake(signals: Signals | null, now: Date): Awake {
     return result(false, "low");
   }
   return result(null, null);
-}
-
-export async function sha256Hex(text: string) {
-  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
-  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }

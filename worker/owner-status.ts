@@ -5,24 +5,11 @@ import { bearerAuth } from "hono/bearer-auth";
 import { bodyLimit } from "hono/body-limit";
 import { cors } from "hono/cors";
 import { z } from "zod";
-import {
-  assertNotFuture,
-  type Diary,
-  diaryDateSchema,
-  diarySchema,
-  evaluateAwake,
-  isDiaryDateInRange,
-  publicHeartRate,
-  type Signals,
-  sha256Hex,
-  signalsSchema,
-} from "../shared/owner-status";
+import { assertNotFuture, evaluateAwake, publicHeartRate, type Signals, signalsSchema } from "../shared/owner-status";
 
 type AppEnv = { Bindings: Env };
 
 const SIGNALS_KEY = "ruru_signals";
-const LATEST_DIARY_KEY = "diary:latest";
-const diaryKey = (date: string) => `diary:${date}`;
 // 公開APIは誰でも叩けるため、KVの値を短時間キャッシュして読み取り回数を抑える。
 const KV_CACHE_TTL_SECONDS = 30;
 
@@ -76,26 +63,6 @@ class Store {
     const parsed = signalsSchema.safeParse(await this.readJson(SIGNALS_KEY));
     return parsed.success ? parsed.data : null;
   }
-
-  async diary(date?: string): Promise<(Diary & { date: string }) | null> {
-    const target = date ?? diaryDateSchema.safeParse(await this.readJson(LATEST_DIARY_KEY)).data;
-    if (target === undefined || !isDiaryDateInRange(target, new Date())) {
-      return null;
-    }
-    const parsed = diarySchema.safeParse(await this.readJson(diaryKey(target)));
-    return parsed.success ? { date: target, ...parsed.data } : null;
-  }
-
-  // 書き込みの判断に使うため、キャッシュを通さずに読む。壊れた値は未設定として上書きさせる。
-  async latestDiaryDate(): Promise<string | null> {
-    const stored = await this.env.PORTFOLIO_STATE.get(LATEST_DIARY_KEY, "json").catch((error: unknown) => {
-      if (error instanceof SyntaxError) {
-        return null;
-      }
-      throw error;
-    });
-    return diaryDateSchema.safeParse(stored).data ?? null;
-  }
 }
 
 const toolResult = (value: Record<string, unknown>) => ({
@@ -113,13 +80,6 @@ const awakeOutput = z.object({
   awake: z.boolean().nullable(),
   confidence: z.enum(["high", "low"]).nullable(),
   evaluatedAt: z.string(),
-});
-const diaryOutput = z.object({
-  date: z.string(),
-  text: z.string(),
-  generatedAt: z.string(),
-  approvedAt: z.string(),
-  sha256: z.string(),
 });
 
 function createPublicMcpServer(store: Store) {
@@ -164,26 +124,6 @@ function createPublicMcpServer(store: Store) {
     },
   );
 
-  server.registerTool(
-    "get_ruru_diary",
-    {
-      description:
-        "arrow2ndのパーソナルエージェントRuruが書き、arrow2ndが承認した日記を返します。dateを省略すると最新の日記を返します。",
-      inputSchema: z.strictObject({ date: diaryDateSchema.optional().describe("JSTの日付(YYYY-MM-DD)") }),
-      outputSchema: diaryOutput,
-      annotations: readOnly,
-    },
-    async ({ date }) => {
-      try {
-        const diary = await store.diary(date);
-        return diary ? toolResult(diary) : toolError("該当する日記はありません。");
-      } catch {
-        log("status_read_failed");
-        return toolError("日記を取得できません。");
-      }
-    },
-  );
-
   return server;
 }
 
@@ -223,16 +163,6 @@ ownerStatus.get("/api/heart-rate", (c) =>
 );
 ownerStatus.get("/api/awake", (c) => respond(c, async (store) => evaluateAwake(await store.signals(), new Date())));
 
-ownerStatus.get("/api/ruru/diary", (c) => respond(c, (store) => store.diary()));
-
-ownerStatus.get("/api/ruru/diary/:date", async (c) => {
-  const date = diaryDateSchema.safeParse(c.req.param("date"));
-  if (!date.success) {
-    return c.json({ error: "invalid_date" }, 400);
-  }
-  return respond(c, (store) => store.diary(date.data));
-});
-
 ownerStatus.put("/api/ruru/signals", ruruAuth, bodyLimit({ maxSize: 4 * 1024 }), async (c) => {
   const parsed = signalsSchema.safeParse(await c.req.json().catch(() => undefined));
   if (!parsed.success) {
@@ -244,25 +174,6 @@ ownerStatus.put("/api/ruru/signals", ruruAuth, bodyLimit({ maxSize: 4 * 1024 }),
     return c.json({ error: "future_timestamp" }, 400);
   }
   await Store.from(c).write(SIGNALS_KEY, parsed.data);
-  return c.body(null, 204);
-});
-
-ownerStatus.put("/api/ruru/diary/:date", ruruAuth, bodyLimit({ maxSize: 4 * 1024 }), async (c) => {
-  const date = diaryDateSchema.safeParse(c.req.param("date"));
-  const parsed = diarySchema.safeParse(await c.req.json().catch(() => undefined));
-  if (!date.success || !parsed.success || !isDiaryDateInRange(date.data, new Date())) {
-    return c.json({ error: "invalid_diary" }, 400);
-  }
-  // 承認された下書きと公開する本文が同一であることを、Ruruが承認時に記録したハッシュで確かめる。
-  if ((await sha256Hex(parsed.data.text)) !== parsed.data.sha256) {
-    return c.json({ error: "sha256_mismatch" }, 400);
-  }
-  const store = Store.from(c);
-  await store.write(diaryKey(date.data), parsed.data);
-  const latest = await store.latestDiaryDate();
-  if (latest === null || date.data >= latest) {
-    await store.write(LATEST_DIARY_KEY, date.data);
-  }
   return c.body(null, 204);
 });
 

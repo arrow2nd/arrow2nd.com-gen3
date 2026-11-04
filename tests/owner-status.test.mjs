@@ -1,14 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {
-  assertNotFuture,
-  diarySchema,
-  evaluateAwake,
-  isDiaryDateInRange,
-  publicHeartRate,
-  sha256Hex,
-  signalsSchema,
-} from "../shared/owner-status.ts";
+import { assertNotFuture, evaluateAwake, publicHeartRate, signalsSchema } from "../shared/owner-status.ts";
 
 // 昼の14:00(JST)と夜の03:00(JST)を基準にする。
 const noon = new Date("2026-11-04T05:00:00Z");
@@ -98,35 +90,4 @@ test("夜に活動がなければ心拍がなくても寝ていると推定し�
   assert.equal(evaluateAwake(signals(noon), noon).awake, null);
   const middle = signals(night, { heartRate: { bpm: 65, observedAt: ago(night, 5) } });
   assert.equal(evaluateAwake(middle, night).awake, null);
-});
-
-test("日記は本文のハッシュを持ち、前後の空白や上限超過を切り詰めずに拒否する", async () => {
-  const text = "今日はずっとコード書いてた。🍙";
-  const diary = {
-    text,
-    generatedAt: "2026-11-04T22:00:00+09:00",
-    approvedAt: "2026-11-04T22:10:00+09:00",
-    sha256: await sha256Hex(text),
-  };
-  assert.deepEqual(diarySchema.parse(diary), diary);
-  assert.equal(await sha256Hex("abc"), "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
-  assert.equal(diarySchema.safeParse({ ...diary, text: "🍙".repeat(400) }).success, true);
-  for (const invalid of [
-    { ...diary, text: "" },
-    { ...diary, text: ` ${text}` },
-    { ...diary, text: "🍙".repeat(401) },
-    { ...diary, sha256: "A".repeat(64) },
-    { ...diary, approvedAt: undefined },
-  ]) {
-    assert.equal(diarySchema.safeParse(invalid).success, false);
-  }
-});
-
-test("日記の日付は公開開始日からJSTの翌日までに限る", () => {
-  // JSTでは2026-11-05の03:00。
-  assert.equal(isDiaryDateInRange("2026-11-01", night), true);
-  assert.equal(isDiaryDateInRange("2026-10-31", night), false);
-  assert.equal(isDiaryDateInRange("2026-11-06", night), true);
-  assert.equal(isDiaryDateInRange("2026-11-07", night), false);
-  assert.equal(isDiaryDateInRange("9999-12-31", night), false);
 });
