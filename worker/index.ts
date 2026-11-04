@@ -78,15 +78,31 @@ function createMcpServer(env: Env) {
 
 async function serveByAccept(c: Context<AppEnv>, markdownPath: string) {
   const url = new URL(c.req.url);
+  const markdown = prefersMarkdown(c.req.header("Accept"));
 
-  if (prefersMarkdown(c.req.header("Accept"))) {
+  if (markdown) {
     url.pathname = markdownPath;
   }
 
-  const asset = await c.env.ASSETS.fetch(new Request(url, c.req.raw));
+  const request = new Request(url, c.req.raw);
+  const response = markdown ? await fetchMarkdown(c, request) : await c.env.ASSETS.fetch(request);
+  const varied = new Response(response.body, response);
   // 同じURLでもAcceptで本文が変わるため、キャッシュを分けさせる。
+  varied.headers.append("Vary", "Accept");
+
+  return varied;
+}
+
+async function fetchMarkdown(c: Context<AppEnv>, request: Request) {
+  const asset = await c.env.ASSETS.fetch(request);
+
+  // 404ページのHTMLをMarkdownとして返さないよう、本文を付けずに返す。
+  if (asset.status === 404) {
+    await asset.body?.cancel();
+    return new Response(null, { status: 404 });
+  }
+
   const response = new Response(asset.body, asset);
-  response.headers.append("Vary", "Accept");
 
   // ASSETS.fetch経由の応答に _headers が効くとは限らないため、Markdownのcharsetをここでも指定する。
   if (response.headers.get("Content-Type")?.startsWith("text/markdown")) {
@@ -176,6 +192,7 @@ app.all("/mcp", (c) => c.body(null, 405, { Allow: "POST" }));
 
 app.get("/", (c) => serveByAccept(c, "/index.md"));
 app.get("/works/:slug{[^/.]+}", (c) => serveByAccept(c, `/works/${c.req.param("slug")}.md`));
+app.get("*", (c, next) => (c.req.path.endsWith(".md") ? fetchMarkdown(c, c.req.raw) : next()));
 
 app.all("*", (c) => c.env.ASSETS.fetch(c.req.raw));
 
