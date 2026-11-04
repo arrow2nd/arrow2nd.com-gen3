@@ -6,6 +6,7 @@ import { bodyLimit } from "hono/body-limit";
 import { z } from "zod";
 import { DEFAULT_THEME, parseStoredTheme, themeInputSchema, themeSchema, validateTheme } from "../shared/theme";
 import { prefersMarkdown } from "./markdown";
+import { ownerStatus } from "./owner-status";
 
 type AppEnv = { Bindings: Env };
 
@@ -168,6 +169,8 @@ app.post("/mcp", bodyLimit({ maxSize: 16 * 1024 }), async (c) => {
 });
 
 app.all("/mcp", (c) => c.body(null, 405, { Allow: "POST" }));
+
+app.route("/", ownerStatus);
 
 app.get("/", (c) => serveByAccept(c, "/index.md"));
 app.get("/works/:slug{[^/.]+}", (c) => serveByAccept(c, `/works/${c.req.param("slug")}.md`));
