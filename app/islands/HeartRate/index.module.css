@@ -1,0 +1,61 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  color: var(--color-text-head);
+  font-family: var(--font-latin);
+  /* 取得するまでは隠しておき、値が出たらフェードインさせる */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  &[data-visible="true"] {
+    opacity: 1;
+  }
+}
+
+.heart {
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor;
+
+  &[data-beating="true"] {
+    animation: beat var(--beat-duration) ease-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &[data-beating="true"] {
+      animation: none;
+    }
+  }
+}
+
+.bpm {
+  font-variant-numeric: tabular-nums;
+}
+
+.unit {
+  font-size: 0.75rem;
+}
+
+/* ドクン、ドクンと2回脈打ってから休む */
+@keyframes beat {
+  0%,
+  45%,
+  100% {
+    scale: 1;
+  }
+
+  12% {
+    scale: 1.25;
+  }
+
+  25% {
+    scale: 1.05;
+  }
+
+  35% {
+    scale: 1.15;
+  }
+}

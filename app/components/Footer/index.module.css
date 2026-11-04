@@ -1,5 +1,5 @@
 .root {
   text-align: center;
   /* 画面下部固定のボトムメニューと重ならないよう余白を確保する */
-  padding-bottom: 6rem;
+  padding-bottom: 9rem;
 }
