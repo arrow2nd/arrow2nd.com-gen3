@@ -87,14 +87,27 @@ function varyByAccept(response: Response) {
 }
 
 async function serveByAccept(c: Context<AppEnv>, markdownPath: string) {
-  if (!prefersMarkdown(c.req.header("Accept"))) {
-    return varyByAccept(await fetchAsset(c, c.req.raw));
+  const markdown = prefersMarkdown(c.req.header("Accept"));
+  const url = new URL(c.req.url);
+
+  if (markdown) {
+    url.pathname = markdownPath;
   }
 
-  const url = new URL(c.req.url);
-  url.pathname = markdownPath;
+  const response = varyByAccept(
+    markdown ? await fetchMarkdown(c, new Request(url, c.req.raw)) : await fetchAsset(c, c.req.raw),
+  );
 
-  return varyByAccept(await fetchMarkdown(c, new Request(url, c.req.raw)));
+  // エージェントがMarkdown版とサイトマップを見つけられるよう、Linkヘッダーで示す(RFC 8288)。
+  if (response.ok) {
+    if (!markdown) {
+      response.headers.append("Link", `<${markdownPath}>; rel="alternate"; type="text/markdown"`);
+    }
+
+    response.headers.append("Link", '</sitemap.xml>; rel="sitemap"; type="application/xml"');
+  }
+
+  return response;
 }
 
 async function fetchMarkdown(c: Context<AppEnv>, request: Request) {
