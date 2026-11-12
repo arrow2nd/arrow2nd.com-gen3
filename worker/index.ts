@@ -76,30 +76,33 @@ function createMcpServer(env: Env) {
   return server;
 }
 
-async function serveByAccept(c: Context<AppEnv>, markdownPath: string) {
-  const url = new URL(c.req.url);
-  const markdown = prefersMarkdown(c.req.header("Accept"));
+const PLAIN_TEXT = "text/plain; charset=utf-8";
 
-  if (markdown) {
-    url.pathname = markdownPath;
-  }
-
-  const request = new Request(url, c.req.raw);
-  const response = markdown ? await fetchMarkdown(c, request) : await c.env.ASSETS.fetch(request);
+// 同じURLでもAcceptで本文が変わるため、キャッシュを分けさせる。
+function varyByAccept(response: Response) {
   const varied = new Response(response.body, response);
-  // 同じURLでもAcceptで本文が変わるため、キャッシュを分けさせる。
   varied.headers.append("Vary", "Accept");
 
   return varied;
 }
 
+async function serveByAccept(c: Context<AppEnv>, markdownPath: string) {
+  if (!prefersMarkdown(c.req.header("Accept"))) {
+    return varyByAccept(await fetchAsset(c, c.req.raw));
+  }
+
+  const url = new URL(c.req.url);
+  url.pathname = markdownPath;
+
+  return varyByAccept(await fetchMarkdown(c, new Request(url, c.req.raw)));
+}
+
 async function fetchMarkdown(c: Context<AppEnv>, request: Request) {
   const asset = await c.env.ASSETS.fetch(request);
 
-  // 404ページのHTMLをMarkdownとして返さないよう、本文を付けずに返す。
   if (asset.status === 404) {
     await asset.body?.cancel();
-    return new Response(null, { status: 404 });
+    return new Response("404 Not Found\n", { status: 404, headers: { "Content-Type": PLAIN_TEXT } });
   }
 
   const response = new Response(asset.body, asset);
@@ -110,6 +113,25 @@ async function fetchMarkdown(c: Context<AppEnv>, request: Request) {
   }
 
   return response;
+}
+
+// 静的アセットに無いパスは、HTMLを要求するクライアントにだけ404ページを返す。
+async function fetchAsset(c: Context<AppEnv>, request: Request) {
+  const asset = await c.env.ASSETS.fetch(request);
+
+  if (asset.status !== 404) {
+    return asset;
+  }
+
+  await asset.body?.cancel();
+
+  if (prefersMarkdown(c.req.header("Accept"))) {
+    return new Response("404 Not Found\n", { status: 404, headers: { "Content-Type": PLAIN_TEXT } });
+  }
+
+  const page = await c.env.ASSETS.fetch(new URL("/404", c.req.url));
+
+  return new Response(page.body, { status: 404, headers: page.headers });
 }
 
 // 末尾スラッシュ付きの作品URLも同じルートで扱うため、strictを無効にする。
@@ -194,6 +216,6 @@ app.get("/", (c) => serveByAccept(c, "/index.md"));
 app.get("/works/:slug{[^/.]+}", (c) => serveByAccept(c, `/works/${c.req.param("slug")}.md`));
 app.get("*", (c, next) => (c.req.path.endsWith(".md") ? fetchMarkdown(c, c.req.raw) : next()));
 
-app.all("*", (c) => c.env.ASSETS.fetch(c.req.raw));
+app.all("*", async (c) => varyByAccept(await fetchAsset(c, c.req.raw)));
 
 export default app;

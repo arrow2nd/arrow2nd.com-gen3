@@ -1,12 +1,7 @@
 import { parseAccept } from "hono/utils/accept";
 
+// HTMLを明示的に要求しないクライアントはエージェントとみなし、Markdownを返す。
+// ブラウザはページ遷移のAcceptに必ず text/html を含める。
 export function prefersMarkdown(header: string | null | undefined): boolean {
-  const ranges = parseAccept(header ?? "");
-  const quality = (type: string) => ranges.find((range) => range.type.toLowerCase() === type)?.q;
-
-  // ワイルドカードだけのブラウザやクライアントには従来のHTMLを返す
-  const markdown = quality("text/markdown") ?? 0;
-  const html = quality("text/html") ?? quality("text/*") ?? quality("*/*") ?? 0;
-
-  return markdown > 0 && markdown >= html;
+  return !parseAccept(header ?? "").some((range) => range.type.toLowerCase() === "text/html" && range.q > 0);
 }

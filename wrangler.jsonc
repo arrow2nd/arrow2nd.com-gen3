@@ -9,7 +9,6 @@
   "assets": {
     "binding": "ASSETS",
     "run_worker_first": ["/mcp", "/theme.json", "/", "/works/*", "/*.md"],
-    "directory": "./dist",
-    "not_found_handling": "404-page"
+    "directory": "./dist"
   }
 }
