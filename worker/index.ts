@@ -5,6 +5,7 @@ import { bearerAuth } from "hono/bearer-auth";
 import { bodyLimit } from "hono/body-limit";
 import { z } from "zod";
 import { DEFAULT_THEME, parseStoredTheme, themeInputSchema, themeSchema, validateTheme } from "../shared/theme";
+import { epithetSection, pickEpithet } from "./epithet";
 import { prefersMarkdown } from "./markdown";
 
 type AppEnv = { Bindings: Env };
@@ -118,12 +119,23 @@ async function fetchMarkdown(c: Context<AppEnv>, request: Request) {
     return new Response("404 Not Found\n", { status: 404, headers: { "Content-Type": PLAIN_TEXT } });
   }
 
-  const response = new Response(asset.body, asset);
+  // 304のように本文のない応答や、Markdown以外の応答には二つ名を足さない。
+  if (asset.status !== 200 || !asset.headers.get("Content-Type")?.startsWith("text/markdown")) {
+    return new Response(asset.body, asset);
+  }
+
+  // IPアドレスとUser-Agentは二つ名を決める計算にだけ使い、保存しない。
+  const visitor = `${c.req.header("CF-Connecting-IP") ?? ""}\n${c.req.header("User-Agent") ?? ""}`;
+  const epithet = await pickEpithet(visitor, new Date());
+  const response = new Response(`${await asset.text()}\n${epithetSection(epithet)}`, asset);
 
   // ASSETS.fetch経由の応答に _headers が効くとは限らないため、Markdownのcharsetをここでも指定する。
-  if (response.headers.get("Content-Type")?.startsWith("text/markdown")) {
-    response.headers.set("Content-Type", "text/markdown; charset=utf-8");
-  }
+  response.headers.set("Content-Type", "text/markdown; charset=utf-8");
+
+  // 本文が訪問者ごとに変わるため、元のアセットの検証子を外し、共有キャッシュに保存させない。
+  response.headers.delete("ETag");
+  response.headers.delete("Content-Length");
+  response.headers.set("Cache-Control", "private, no-cache");
 
   return response;
 }
