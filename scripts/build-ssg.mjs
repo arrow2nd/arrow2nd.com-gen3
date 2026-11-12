@@ -27,6 +27,18 @@ const sitemapPlugin = {
     const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`;
 
     await fsModule.writeFile(path.join(outputDir, "sitemap.xml"), xml);
+
+    // 検索・AIの回答への引用・学習のいずれも許可する。サイトマップのURLを共有するため、ここで生成する。
+    const robots = [
+      "User-agent: *",
+      "Content-Signal: search=yes, ai-input=yes, ai-train=yes",
+      "Allow: /",
+      "",
+      `Sitemap: ${new URL("sitemap.xml", SITE_URL)}`,
+      "",
+    ].join("\n");
+
+    await fsModule.writeFile(path.join(outputDir, "robots.txt"), robots);
   },
 };
 
