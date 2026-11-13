@@ -19,7 +19,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.2",
     "budoux": "^0.10.0",
-    "hono": "^4.13.13",
+    "hono": "^4.13.16",
     "honox": "^0.1.61",
     "zod": "^4.6.7"
   },
