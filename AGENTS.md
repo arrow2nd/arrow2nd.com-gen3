@@ -21,6 +21,7 @@ Vite/honox の制約を回避するための3点セット。どれか欠ける�
 動的ルートは `ssgParams`(hono/ssg) で slug を列挙する。
 作品のMDX原文は同じビルドで `/works/:slug.md` にコピーする。Markdownの配信確認は `pnpm build` 後の `pnpm preview` を使う。
 トップの `/index.md` は `app/server.ts` で登録し、HTMLと共有する `app/data/profile.ts` と作品データから生成する。
+エージェント向けの案内を書いた `/llms.txt` も `app/server.ts` で登録し、同じビルドで静的ファイルにする。
 
 ## Ruru連携
 

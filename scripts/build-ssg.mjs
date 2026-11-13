@@ -46,7 +46,7 @@ const app = (await import(new URL("../dist/index.js", import.meta.url))).default
 
 const result = await toSSG(app, fs, {
   dir: OUTPUT_DIR,
-  extensionMap: { "text/html": "html", "text/markdown": "md" },
+  extensionMap: { "text/html": "html", "text/markdown": "md", "text/plain": "txt" },
   plugins: [sitemapPlugin],
 });
 
