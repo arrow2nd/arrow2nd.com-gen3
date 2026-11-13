@@ -1,4 +1,5 @@
 import { raw } from "hono/html";
+import { profile } from "../data/profile";
 import { SITE_URL, toAbsoluteUrl } from "./site";
 import type { Work } from "./works";
 
@@ -30,9 +31,10 @@ export function buildPersonJsonLd(): JsonLd {
   return {
     "@type": "Person",
     "@id": PERSON_ID,
-    name: "arrow2nd",
+    name: profile.name,
+    description: profile.interests.join(""),
     url: SITE_URL,
-    jobTitle: "フロントエンドエンジニア",
+    jobTitle: profile.jobTitle,
     sameAs: ["https://x.com/_arrow2nd", "https://github.com/arrow2nd"],
   };
 }
