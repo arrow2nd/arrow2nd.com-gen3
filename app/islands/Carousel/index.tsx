@@ -16,12 +16,14 @@ const INTERVAL_MS = 4000;
 
 export default function Carousel({ images, alt }: Props) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
+  // 利用者が停止ボタンで切り替える自動送りの設定。ホバーやタッチ中の一時停止とは別に持つ
+  const [autoplay, setAutoplay] = useState(true);
 
   const trackRef = useRef<HTMLDivElement>(null);
   // hono/jsx の useRef は current が T | null になるので null で初期化する
   const scrollTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
   const autoScrollRef = useRef<ReturnType<typeof setInterval>>(null);
+  const autoplayRef = useRef(true);
   const initializedRef = useRef(false);
   const activeIndexRef = useRef(0);
   activeIndexRef.current = activeIndex;
@@ -50,13 +52,22 @@ export default function Carousel({ images, alt }: Props) {
     el.scrollTo({ left: domIndex * getSlideWidth(), behavior });
   };
 
+  // 動きを減らす設定のときは、スライドの移動をアニメーションさせない
+  const getScrollBehavior = (): ScrollBehavior =>
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+
   // 論理インデックス(0〜length-1)でスクロールする
   const scrollToLogical = (index: number) => {
-    scrollToDom(index + 1, "smooth");
+    scrollToDom(index + 1, getScrollBehavior());
   };
 
   const startAutoScroll = () => {
     clearInterval(autoScrollRef.current ?? undefined);
+
+    if (!autoplayRef.current) {
+      return;
+    }
+
     autoScrollRef.current = setInterval(() => {
       const el = trackRef.current;
       if (!el) {
@@ -69,7 +80,7 @@ export default function Carousel({ images, alt }: Props) {
       }
       const domIndex = Math.round(el.scrollLeft / slideWidth);
 
-      scrollToDom(domIndex + 1, "smooth");
+      scrollToDom(domIndex + 1, getScrollBehavior());
     }, INTERVAL_MS);
   };
 
@@ -90,7 +101,7 @@ export default function Carousel({ images, alt }: Props) {
     }
 
     const domIndex = Math.round(el.scrollLeft / slideWidth);
-    scrollToDom(domIndex + delta, "smooth");
+    scrollToDom(domIndex + delta, getScrollBehavior());
   };
 
   // スクロールできるようになった時点で、一度だけ初期位置(クローンを除いた1枚目)を当てる
@@ -112,6 +123,12 @@ export default function Carousel({ images, alt }: Props) {
   useEffect(() => {
     if (images.length <= 1) {
       return;
+    }
+
+    // 動きを減らす設定のときは、利用者が再生ボタンを押すまで自動で送らない
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      autoplayRef.current = false;
+      setAutoplay(false);
     }
 
     initPosition();
@@ -170,9 +187,7 @@ export default function Carousel({ images, alt }: Props) {
         setActiveIndex(domIndex - 1);
       }
 
-      if (!paused) {
-        startAutoScroll();
-      }
+      startAutoScroll();
     }, 80);
   };
 
@@ -196,14 +211,21 @@ export default function Carousel({ images, alt }: Props) {
     }
   };
 
-  const pause = () => {
-    setPaused(true);
-    stopAutoScroll();
-  };
+  // ホバー中とタッチ中は一時的に止める。startAutoScroll は自動送りが無効なら何もしない
+  const pause = stopAutoScroll;
+  const resume = startAutoScroll;
 
-  const resume = () => {
-    setPaused(false);
-    startAutoScroll();
+  const toggleAutoplay = () => {
+    const next = !autoplayRef.current;
+
+    autoplayRef.current = next;
+    setAutoplay(next);
+
+    if (next) {
+      startAutoScroll();
+    } else {
+      stopAutoScroll();
+    }
   };
 
   if (images.length === 1) {
@@ -230,6 +252,9 @@ export default function Carousel({ images, alt }: Props) {
                 alt={`${alt} (${logicalIndex + 1}/${images.length})`}
                 class={styles.image}
                 aria-hidden={i === 0 || i === slides.length - 1}
+                // 最初に見える1枚目だけ先に読み込み、ほかは表示位置に近づくまで待つ
+                loading={i === 1 ? "eager" : "lazy"}
+                fetchpriority={i === 1 ? "high" : undefined}
                 onLoad={initPosition}
               />
             );
@@ -251,10 +276,17 @@ export default function Carousel({ images, alt }: Props) {
             <img src={src} alt="" loading="lazy" />
           </button>
         ))}
+        <button
+          type="button"
+          class={styles.autoplay}
+          aria-label={autoplay ? "自動送りを止める" : "自動送りを再開する"}
+          onClick={toggleAutoplay}
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            {autoplay ? <path d="M7 5h3v14H7zM14 5h3v14h-3z" /> : <path d="M8 5v14l11-7z" />}
+          </svg>
+        </button>
       </div>
-                // 最初に見える1枚目だけ先に読み込み、ほかは表示位置に近づくまで待つ
-                loading={i === 1 ? "eager" : "lazy"}
-                fetchpriority={i === 1 ? "high" : undefined}
     </div>
   );
 }

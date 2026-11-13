@@ -92,3 +92,23 @@
   composes: indicator;
   border-color: var(--color-base);
 }
+
+/* 自動送りの停止・再開ボタン。インジケーターの列の右端に置く */
+.autoplay {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  aspect-ratio: 1;
+  margin-left: auto;
+  padding: 0;
+  border: 2px solid var(--color-border);
+  border-radius: 4px;
+  background: none;
+  color: var(--color-text-head);
+  cursor: pointer;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
