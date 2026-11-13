@@ -110,15 +110,13 @@ export default function BottomMenu() {
     location.assign(id === "home" ? "/" : `/#${id}`);
   };
 
-  // 扇ボタンの操作。Works/Contact は popup をトグル、それ以外はスクロールして全部閉じる
-  const handleFanItem = (id: SectionId) => {
-    if (id === "works" || id === "contact") {
-      // 同じボタンをもう一度タップしたら閉じる
-      setPopup((prev) => (prev === id ? null : id));
-      return;
+  // Home/About はリンク。ペライチを表示中はページを読み込み直さず、その場でスクロールする
+  const handleFanLink = (e: MouseEvent, id: SectionId) => {
+    if (location.pathname === "/") {
+      e.preventDefault();
+      scrollToSection(id);
     }
 
-    scrollToSection(id);
     closeAll();
   };
 
@@ -211,23 +209,45 @@ export default function BottomMenu() {
 
       {ITEMS.map(({ id, label, tx, ty, i }) => {
         const NavIcon = NAV_ICONS[id];
-        const isPopup = id === "works" || id === "contact";
-
-        return (
-          <button
-            key={id}
-            type="button"
-            class={styles.fanItem}
-            style={{ "--tx": `${tx}px`, "--ty": `${ty}px`, "--i": i }}
-            data-active={active === id ? "" : undefined}
-            tabIndex={open ? 0 : -1}
-            aria-label={label}
-            aria-expanded={isPopup ? popup === id : undefined}
-            onClick={() => handleFanItem(id)}
-          >
+        const common = {
+          class: styles.fanItem,
+          style: { "--tx": `${tx}px`, "--ty": `${ty}px`, "--i": i },
+          "data-active": active === id ? "" : undefined,
+          tabIndex: open ? 0 : -1,
+          "aria-label": label,
+        };
+        const content = (
+          <>
             <NavIcon class={styles.fanIcon} />
             <span class={styles.fanLabel}>{label}</span>
-          </button>
+          </>
+        );
+
+        // Works/Contact は popup を開閉するボタン。同じボタンをもう一度タップしたら閉じる
+        if (id === "works" || id === "contact") {
+          return (
+            <button
+              key={id}
+              type="button"
+              {...common}
+              aria-expanded={popup === id}
+              onClick={() => setPopup((prev) => (prev === id ? null : id))}
+            >
+              {content}
+            </button>
+          );
+        }
+
+        // Home/About は移動先のURLを持つのでリンクにする
+        return (
+          <a
+            key={id}
+            href={id === "home" ? "/" : `/#${id}`}
+            {...common}
+            onClick={(e: MouseEvent) => handleFanLink(e, id)}
+          >
+            {content}
+          </a>
         );
       })}
 
