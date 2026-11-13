@@ -12,6 +12,8 @@ export default defineConfig(({ mode }) => ({
     // 全CSS(グローバル + CSS Modules)を1ファイルに集約し、
     // AppCss の manifest["style.css"] 解決1本でブラウザに届ける
     cssCodeSplit: false,
+    // 小さいフォントがbase64でCSSに埋め込まれると、描画を止めるCSSが使わない字形の分まで大きくなる
+    assetsInlineLimit: (filePath) => (/\.woff2?$/.test(filePath) ? false : undefined),
     // SSRビルド(2段目)で clientビルドの成果物(dist/static, manifest)を消さない
     emptyOutDir: mode === "client",
   },
