@@ -1,4 +1,5 @@
 import Carousel from "../../islands/Carousel";
+import { getImageSize } from "../../lib/image-sizes";
 import type { Work } from "../../lib/works";
 import DashedHeading from "../DashedHeading";
 import MarkdownContent from "../MarkdownContent";
@@ -14,7 +15,7 @@ export default function WorkDetail({ work }: Props) {
     <main class={styles.root}>
       <div class={styles.gallery}>
         <div class={styles.carousel}>
-          <Carousel images={work.images} alt={work.title} />
+          <Carousel images={work.images.map((src) => ({ src, ...getImageSize(src) }))} alt={work.title} />
         </div>
         <div class={styles.images}>
           {work.images.map((src, i) => (
@@ -22,7 +23,9 @@ export default function WorkDetail({ work }: Props) {
               key={src}
               src={src}
               alt={`${work.title} (${i + 1}/${work.images.length})`}
+              {...getImageSize(src)}
               loading={i === 0 ? "eager" : "lazy"}
+              fetchpriority={i === 0 ? "high" : undefined}
             />
           ))}
         </div>

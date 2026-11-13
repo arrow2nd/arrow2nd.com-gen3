@@ -5,6 +5,7 @@ HonoX + hono/jsx + CSS Modules + SSG。ページはCloudflare Workersのstatic a
 - React は使っていない。JSX は `hono/jsx`(サーバー) / `hono/jsx/dom`(islands)。React 専用ライブラリは動かない
 - ページは `/`(ペライチ)と `/works/:slug`(作品詳細)のみ。作品詳細は通常のページ遷移で表示する
 - 作品データは `app/data/works/<category>/<slug>/index.mdx`(元画像PNGも同ディレクトリ)。frontmatter(title/images/link/createdAt)は remark-mdx-frontmatter でビルド時に展開され、`app/lib/works.ts` の `import.meta.glob` で集約される
+- `<img>` の `width` / `height` は `scripts/build-images.mjs` が生成する `app/generated/image-sizes.json`(Git管理外)から `app/lib/image-sizes.ts` 経由で取る。dev / build の先頭で生成される
 
 ## CSS Modules の配線(壊さないこと)
 

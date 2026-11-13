@@ -1,8 +1,14 @@
 import { useEffect, useRef, useState } from "hono/jsx";
 import styles from "./index.module.css";
 
+type Image = {
+  src: string;
+  width: number;
+  height: number;
+};
+
 type Props = {
-  images: string[];
+  images: Image[];
   alt: string;
 };
 
@@ -201,11 +207,11 @@ export default function Carousel({ images, alt }: Props) {
   };
 
   if (images.length === 1) {
-    return <img src={images[0]} alt={alt} class={styles.image} />;
+    return <img {...images[0]} alt={alt} class={styles.image} fetchpriority="high" />;
   }
 
   // [last, ...images, first]
-  const slides = [images.at(-1), ...images, images.at(0)].filter((src) => typeof src === "string");
+  const slides = [images.at(-1), ...images, images.at(0)].filter((image) => image !== undefined);
 
   return (
     // biome-ignore lint/a11y/noStaticElementInteractions: ドラッグでのスクロールを優先させたい
@@ -214,13 +220,13 @@ export default function Carousel({ images, alt }: Props) {
         {/* biome-ignore lint/a11y/noStaticElementInteractions: タッチ時のクリック座標で前後送りを判定する。スワイプ(スクロール)を妨げないよう div のままにする。キーボード操作は下部のインジケーターと、coarse 環境でも activation を受けられる前後ボタンで担保されている */}
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: クリック座標による帯判定はポインタ専用の補助操作。キーボード操作は前後ボタンとインジケーターで担保されている */}
         <div ref={trackRef} class={styles.track} onScroll={handleScroll} onClick={handleTrackClick}>
-          {slides.map((src, i) => {
+          {slides.map((image, i) => {
             const logicalIndex = (i - 1 + images.length) % images.length;
 
             return (
               <img
-                key={`${src}-${i.toString()}`}
-                src={src}
+                key={`${image.src}-${i.toString()}`}
+                {...image}
                 alt={`${alt} (${logicalIndex + 1}/${images.length})`}
                 class={styles.image}
                 aria-hidden={i === 0 || i === slides.length - 1}
@@ -233,7 +239,7 @@ export default function Carousel({ images, alt }: Props) {
         <button type="button" class={styles.tapNext} aria-label="次の画像" onClick={() => scrollByStep(1)} />
       </div>
       <div class={styles.indicators}>
-        {images.map((src, i) => (
+        {images.map(({ src }, i) => (
           <button
             key={i.toString()}
             type="button"
@@ -242,10 +248,13 @@ export default function Carousel({ images, alt }: Props) {
             aria-current={i === activeIndex ? "true" : undefined}
             onClick={() => scrollToLogical(i)}
           >
-            <img src={src} alt="" />
+            <img src={src} alt="" loading="lazy" />
           </button>
         ))}
       </div>
+                // 最初に見える1枚目だけ先に読み込み、ほかは表示位置に近づくまで待つ
+                loading={i === 1 ? "eager" : "lazy"}
+                fetchpriority={i === 1 ? "high" : undefined}
     </div>
   );
 }
