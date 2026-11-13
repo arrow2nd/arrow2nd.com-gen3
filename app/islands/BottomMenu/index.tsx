@@ -194,7 +194,13 @@ export default function BottomMenu() {
         <ul class={styles.popupList}>
           {CONTACT_LINKS.map(({ label, href, external, Icon }) => (
             <li key={label}>
-              <a class={styles.popupItem} href={href} target={external ? "_blank" : undefined} onClick={closeAll}>
+              <a
+                class={styles.popupItem}
+                href={href}
+                target={external ? "_blank" : undefined}
+                rel={external ? "noopener noreferrer" : undefined}
+                onClick={closeAll}
+              >
                 <Icon class={styles.popupIcon} />
                 <span class={styles.popupLabel}>{label}</span>
               </a>
