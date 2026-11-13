@@ -76,7 +76,17 @@ function createMcpServer(env: Env) {
   return server;
 }
 
-const PLAIN_TEXT = "text/plain; charset=utf-8";
+// HTMLを要求しないクライアントには、次に読む場所を辿れるMarkdownの404を返す。
+function markdownNotFound(c: Context<AppEnv>) {
+  const { origin } = new URL(c.req.url);
+  const body = [
+    "# 404 Not Found",
+    "このURLにページはありません。",
+    `- [トップページ](${origin}/)\n- [サイトマップ](${origin}/sitemap.xml)\n- [llms.txt](${origin}/llms.txt)`,
+  ].join("\n\n");
+
+  return new Response(`${body}\n`, { status: 404, headers: { "Content-Type": "text/markdown; charset=utf-8" } });
+}
 
 // 同じURLでもAcceptで本文が変わるため、キャッシュを分けさせる。
 function varyByAccept(response: Response) {
@@ -115,7 +125,7 @@ async function fetchMarkdown(c: Context<AppEnv>, request: Request) {
 
   if (asset.status === 404) {
     await asset.body?.cancel();
-    return new Response("404 Not Found\n", { status: 404, headers: { "Content-Type": PLAIN_TEXT } });
+    return markdownNotFound(c);
   }
 
   const response = new Response(asset.body, asset);
@@ -139,7 +149,7 @@ async function fetchAsset(c: Context<AppEnv>, request: Request) {
   await asset.body?.cancel();
 
   if (prefersMarkdown(c.req.header("Accept"))) {
-    return new Response("404 Not Found\n", { status: 404, headers: { "Content-Type": PLAIN_TEXT } });
+    return markdownNotFound(c);
   }
 
   const page = await c.env.ASSETS.fetch(new URL("/404", c.req.url));
